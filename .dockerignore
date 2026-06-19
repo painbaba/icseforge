@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+*.log
+.env
+.env.local
+db/*.db
+db/*.db-journal
+public/generated/*
+upload/cbse_database.json
+upload/icse_kb_all.json
+tool-results
+skills
+examples
+mini-services
+download

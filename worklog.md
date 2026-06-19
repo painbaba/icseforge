@@ -482,3 +482,25 @@ Stage Summary:
 - Scales to 100K+ chunks with constant memory (FTS5 is DB-side)
 - Image generation is now optional (skipImages flag) — can be re-enabled on higher-memory servers
 - This is the production-grade solution — no more OOM crashes
+
+---
+Task ID: 18
+Agent: main
+Task: Prepare for production deployment
+
+Work Log:
+- Created Dockerfile (multi-stage build: builder + runner, Node 20 + Bun + Python3)
+- Created railway.toml (Railway config with persistent volumes for SQLite + images)
+- Created .dockerignore (excludes node_modules, .next, .git, large upload files)
+- Created .env.example (all 11 API key slots with signup URLs documented)
+- Created scripts/seed-for-deployment.ts (one-command DB seeding: schema push + FTS5 index creation + smart ingest + CBSE ingest + ICSE PDF ingest)
+- Created DEPLOYMENT.md (step-by-step Railway deployment guide, 15 min total)
+- Fixed lint error in seed script (removed require() import)
+- All files lint-clean
+
+Stage Summary:
+- App is fully deployment-ready
+- Recommended platform: Railway (persistent volumes keep SQLite + images)
+- Cost: ~$5/month (covered by Railway free credit)
+- Deploy steps: push to GitHub → connect Railway → add env vars → add volume → deploy → run seed script
+- All deployment files in project root: Dockerfile, railway.toml, .dockerignore, .env.example, DEPLOYMENT.md

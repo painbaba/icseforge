@@ -1,0 +1,36 @@
+# Railway deployment config
+# Docs: https://docs.railway.app
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Health check
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Persistent volume for SQLite database + generated images
+# This ensures data survives redeploys
+[[deploy.volume]]
+name = "app-data"
+mountPath = "/app/data"
+
+[[deploy.volume]]
+name = "generated-images"
+mountPath = "/app/public/generated"
+
+# Environment variables (set these in Railway dashboard)
+# DATABASE_URL=file:/app/data/custom.db
+# OPENAI_API_KEY=...
+# DEEPSEEK_API_KEY=...
+# XAI_API_KEY=...
+# GITHUB_TOKEN=...
+# GROQ_API_KEY=...
+# GEMINI_API_KEY=...
+# MISTRAL_API_KEY=...
+# ANTHROPIC_API_KEY=...
+# PERPLEXITY_API_KEY=...
+# OPENROUTER_API_KEY=...
