@@ -9,9 +9,10 @@ export const maxDuration = 300;
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { sourceText, sourceName, userTopic, userSubject, userClass } = body as {
+    const { sourceText, sourceName, userTopic, userSubject, userClass, board, skipImages } = body as {
       sourceText?: string; sourceName?: string;
       userTopic?: string; userSubject?: string; userClass?: string;
+      board?: string; skipImages?: boolean;
     };
 
     if (!sourceText || sourceText.trim().length < 20) {
@@ -25,16 +26,20 @@ export async function POST(req: NextRequest) {
         subject: userSubject || 'General',
         className: userClass || '10',
         topic: userTopic || 'Untitled',
+        board: board || 'ICSE',
         status: 'processing',
         sourceText,
         sourceName: sourceName || 'upload'
       }
     });
 
-    // Run pipeline (this may take 30-90s)
+    // Run pipeline (skipImages prevents OOM crashes on memory-constrained servers)
     const result = await runPipeline({
-      sourceText, sourceName: sourceName || 'upload',
-      userTopic, userSubject, userClass
+      sourceText,
+      sourceName: sourceName || 'upload',
+      userTopic, userSubject, userClass,
+      board,
+      skipImages: skipImages ?? true // default to skipping images for stability
     });
 
     // Save results
@@ -45,6 +50,7 @@ export async function POST(req: NextRequest) {
         subject: result.subject,
         className: result.className,
         topic: result.topic,
+        board: board || 'ICSE',
         status: 'completed',
         outline: JSON.stringify(result.outline),
         finalOutput: result.finalOutput,
@@ -58,6 +64,7 @@ export async function POST(req: NextRequest) {
       subject: result.subject,
       className: result.className,
       topic: result.topic,
+      board: board || 'ICSE',
       outline: result.outline,
       finalOutput: result.finalOutput,
       images: result.images,

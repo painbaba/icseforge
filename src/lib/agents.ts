@@ -44,6 +44,8 @@ export interface PipelineInput {
   userTopic?: string;
   userSubject?: string;
   userClass?: string;
+  board?: string;
+  skipImages?: boolean; // skip image generation to save memory/time
 }
 
 export interface PipelineOutput {
@@ -556,14 +558,38 @@ export async function runPipeline(input: PipelineInput): Promise<PipelineOutput>
   );
   logs.push(writerLog);
 
-  // 4. Image Director + 5. Image Generator (run together)
-  const { images: imagePlan, log: dirLog } = await runImageDirector(
-    analysis.subject, analysis.topic, outline, rawContent
-  );
-  logs.push(dirLog);
+  // 4. Image Director + 5. Image Generator (skippable to save memory)
+  let images: { prompt: string; path: string; caption: string; section: string }[] = [];
+  if (input.skipImages) {
+    logs.push(log('Image Director', 'completed', {
+      finishedAt: new Date().toISOString(),
+      durationMs: 0,
+      output: 'Skipped (memory-safe mode)'
+    }));
+    logs.push(log('Image Generator', 'completed', {
+      finishedAt: new Date().toISOString(),
+      durationMs: 0,
+      output: 'Skipped (memory-safe mode)'
+    }));
+  } else {
+    try {
+      const { images: imagePlan, log: dirLog } = await runImageDirector(
+        analysis.subject, analysis.topic, outline, rawContent
+      );
+      logs.push(dirLog);
 
-  const { images, log: imgLog } = await runImageGenerator(imagePlan);
-  logs.push(imgLog);
+      const { images: genImages, log: imgLog } = await runImageGenerator(imagePlan);
+      logs.push(imgLog);
+      images = genImages;
+    } catch (err: any) {
+      console.error('Image generation failed (non-fatal):', err.message);
+      logs.push(log('Image Generator', 'failed', {
+        finishedAt: new Date().toISOString(),
+        error: err.message,
+        output: 'Image generation skipped due to error'
+      }));
+    }
+  }
 
   // 6. Originality (parallel with image gen would be ideal, but runs after writer)
   const { content: finalContent, log: origLog } = await runOriginalityAgent(

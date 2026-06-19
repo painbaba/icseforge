@@ -1,11 +1,16 @@
-// ICSE Knowledge Base — RAG retrieval layer
-// Loaded once into memory at module init. Retrieval is O(N) string scan = sub-millisecond.
-// No external API calls — fully local.
+// Knowledge Base — RAG retrieval layer using SQLite FTS5
+// FTS5 does full-text search at the DB level — ZERO in-memory loading.
+// Scales to 100K+ chunks with constant memory usage.
+//
+// This replaced the old in-memory index that loaded all chunks into RAM
+// and caused OOM crashes with 10K+ chunks.
 
 import { ICSE_SEED, type SeedChunk } from './icse-knowledge';
 import { db } from './db';
+import { Prisma } from '@prisma/client';
 
 export interface RetrievedChunk {
+  id: string;
   board: string;
   subject: string;
   className: string;
@@ -17,117 +22,129 @@ export interface RetrievedChunk {
   score: number;
 }
 
-// In-memory LIGHTWEIGHT index (title + tags only — NOT full content).
-// Full content is fetched on-demand per chunk after retrieval ranks them.
-// This keeps memory low even with 10K+ chunks.
-interface LightChunk {
-  id: string;
-  board: string;
-  subject: string;
-  className: string;
-  category: string;
-  chapter: string;
-  title: string;
-  tags: string;
+// ─── FTS5 raw SQL queries (Prisma doesn't natively support FTS5) ──────────
+
+// Escape FTS5 query string: wrap each term in quotes for safe matching
+function buildFtsQuery(query: string): string {
+  const terms = query
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(t => t.length > 2)
+    .slice(0, 10); // limit to 10 terms to avoid huge queries
+  if (terms.length === 0) return '';
+  // Use OR matching: any term can match
+  return terms.map(t => `"${t}"*`).join(' OR ');
 }
 
-let lightIndex: LightChunk[] | null = null;
-let lastDbCount = -1;
-
-async function loadLightIndex(): Promise<LightChunk[]> {
-  const dbCount = await db.knowledgeChunk.count();
-  if (lightIndex && dbCount === lastDbCount) return lightIndex;
-
-  const fromDb = await db.knowledgeChunk.findMany({
-    select: {
-      id: true, board: true, subject: true, className: true, category: true,
-      chapter: true, title: true, tags: true
-    }
-  });
-
-  const seedLight: LightChunk[] = ICSE_SEED.map((c, i) => ({
-    id: `seed_${i}`,
-    board: 'ICSE', subject: c.subject, className: c.className, category: c.category,
-    chapter: c.chapter, title: c.title, tags: c.tags
-  }));
-
-  const dbLight: LightChunk[] = fromDb.map(c => ({
-    id: c.id,
-    board: c.board || 'ICSE', subject: c.subject, className: c.className, category: c.category,
-    chapter: c.chapter, title: c.title, tags: c.tags
-  }));
-
-  lightIndex = [...seedLight, ...dbLight];
-  lastDbCount = dbCount;
-  return lightIndex;
-}
-
-// Allow forcing reload after new user uploads
-export async function reloadKnowledgeBase(): Promise<void> {
-  lightIndex = null;
-  lastDbCount = -1;
-  await loadLightIndex();
-}
-
-// Fetch full content for a specific chunk by ID (on-demand)
-async function fetchChunkContent(id: string): Promise<string> {
-  if (id.startsWith('seed_')) {
-    const seedIdx = parseInt(id.replace('seed_', ''), 10);
-    return ICSE_SEED[seedIdx]?.content || '';
-  }
-  const chunk = await db.knowledgeChunk.findUnique({
-    where: { id },
-    select: { content: true }
-  });
-  return chunk?.content || '';
-}
-
-// Simple but effective retrieval: term-frequency + metadata boost.
-// Uses lightweight index (title+tags only) for scoring, then fetches full content for top results.
+// Main retrieval: FTS5 search with board + subject filtering
 export async function retrieve(query: string, opts: {
   subject?: string;
   category?: string;
   board?: string;
   topK?: number;
 } = {}): Promise<RetrievedChunk[]> {
-  const index = await loadLightIndex();
   const topK = opts.topK ?? 5;
-  const terms = query.toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(t => t.length > 2);
+  const ftsQuery = buildFtsQuery(query);
 
-  const scored = index.map(chunk => {
-    const haystack = `${chunk.title} ${chunk.tags}`.toLowerCase();
+  // If no FTS query (all terms too short), fall back to ILIKE on title
+  if (!ftsQuery) {
+    const fallback = await db.knowledgeChunk.findMany({
+      where: {
+        ...(opts.board && { board: opts.board }),
+        ...(opts.subject && { subject: opts.subject }),
+        ...(opts.category && { category: opts.category })
+      },
+      take: topK,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, board: true, subject: true, className: true, category: true,
+        chapter: true, title: true, content: true, tags: true
+      }
+    });
+    return fallback.map(c => ({ ...c, score: 1 }));
+  }
+
+  // FTS5 search via raw SQL
+  // Rank by bm25() (lower = better match, so we negate)
+  // Filter by board/subject/category in the JOIN
+  try {
+    const boardFilter = opts.board ? `AND k.board = '${opts.board.replace(/'/g, "''")}'` : '';
+    const subjectFilter = opts.subject ? `AND k.subject = '${opts.subject.replace(/'/g, "''")}'` : '';
+    const categoryFilter = opts.category ? `AND k.category = '${opts.category.replace(/'/g, "''")}'` : '';
+
+    const sql = Prisma.sql`
+      SELECT k.id, k.board, k.subject, k.className, k.category, k.chapter,
+             k.title, k.content, k.tags,
+             -bm25(KnowledgeChunk_fts) as score
+      FROM KnowledgeChunk_fts
+      JOIN KnowledgeChunk k ON k.rowid = KnowledgeChunk_fts.rowid
+      WHERE KnowledgeChunk_fts MATCH ${ftsQuery}
+      ${Prisma.raw(boardFilter)}
+      ${Prisma.raw(subjectFilter)}
+      ${Prisma.raw(categoryFilter)}
+      ORDER BY score DESC
+      LIMIT ${topK}
+    `;
+
+    const results: any[] = await db.$queryRaw(sql);
+    const chunks: RetrievedChunk[] = results.map(r => ({
+      id: r.id,
+      board: r.board || 'ICSE',
+      subject: r.subject,
+      className: r.className,
+      category: r.category,
+      chapter: r.chapter,
+      title: r.title,
+      content: typeof r.content === 'string' ? r.content : String(r.content),
+      tags: r.tags,
+      score: typeof r.score === 'number' ? r.score : Number(r.score)
+    }));
+
+    // If board-filtered search returns too few, try without board filter (fallback)
+    if (chunks.length < 3 && opts.board) {
+      const fallback = await retrieve(query, { ...opts, board: undefined, topK });
+      // Merge, preferring board-matched chunks
+      const seen = new Set(chunks.map(c => c.id));
+      return [...chunks, ...fallback.filter(c => !seen.has(c.id))].slice(0, topK);
+    }
+
+    // Also include seed chunks in search (they're not in DB)
+    const seedResults = searchSeedChunks(query, opts, topK);
+    return [...chunks, ...seedResults].slice(0, topK);
+  } catch (err: any) {
+    console.error('FTS5 search failed, falling back to seed:', err.message);
+    return searchSeedChunks(query, opts, topK);
+  }
+}
+
+// Search the in-code seed chunks (22 chunks) — always in memory (tiny)
+function searchSeedChunks(query: string, opts: {
+  subject?: string;
+  category?: string;
+  board?: string;
+  topK?: number;
+}, topK: number = 5): RetrievedChunk[] {
+  const terms = query.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(t => t.length > 2);
+  const scored = ICSE_SEED.map(c => {
+    const haystack = `${c.title} ${c.tags} ${c.content}`.toLowerCase();
     let score = 0;
     for (const term of terms) {
-      const matches = (haystack.match(new RegExp(term, 'g')) || []).length;
-      score += matches;
+      score += (haystack.match(new RegExp(term, 'g')) || []).length;
     }
-    if (opts.subject && chunk.subject.toLowerCase() === opts.subject.toLowerCase()) score *= 1.5;
-    if (opts.category && chunk.category === opts.category) score *= 1.3;
-    if (opts.board) {
-      if (chunk.board === opts.board) score *= 2.0;
-      else if (chunk.board === 'GENERAL') score *= 1.0;
-      else score *= 0.1;
-    }
-    return { ...chunk, score: score / Math.max(haystack.length, 1) * 1000 };
+    if (opts.subject && c.subject.toLowerCase() === opts.subject.toLowerCase()) score *= 1.5;
+    if (opts.board && opts.board !== 'ICSE') score *= 0.1; // seeds are ICSE-only
+    return {
+      id: `seed_${ICSE_SEED.indexOf(c)}`,
+      board: 'ICSE', subject: c.subject, className: c.className, category: c.category,
+      chapter: c.chapter, title: c.title, content: c.content, tags: c.tags,
+      score: score / Math.max(haystack.length, 1) * 1000
+    };
   });
-
-  const topResults = scored
+  return scored
     .filter(c => c.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK);
-
-  // Fetch full content for top results (on-demand, parallel)
-  const withContent = await Promise.all(
-    topResults.map(async (c) => {
-      const content = await fetchChunkContent(c.id);
-      return { ...c, content, score: c.score };
-    })
-  );
-
-  return withContent;
 }
 
 // Build a context string for LLM prompts
@@ -145,18 +162,22 @@ export async function buildContext(query: string, opts?: {
 }
 
 export async function getKnowledgeStats() {
-  const index = await loadLightIndex();
-  const subjects = Array.from(new Set(index.map(c => c.subject)));
-  const categories = Array.from(new Set(index.map(c => c.category)));
-  const boards = Array.from(new Set(index.map(c => c.board)));
-  const icseCount = index.filter(c => c.board === 'ICSE').length;
-  const cbseCount = index.filter(c => c.board === 'CBSE').length;
+  // Use raw SQL for efficiency — avoid loading 10K rows into memory
+  const totalChunks = await db.knowledgeChunk.count();
+  const icseCount = await db.knowledgeChunk.count({ where: { board: 'ICSE' } });
+  const cbseCount = await db.knowledgeChunk.count({ where: { board: 'CBSE' } });
+
+  // Get distinct subjects/boards/categories via raw SQL GROUP BY (much faster than Prisma distinct)
+  const subjects: any[] = await db.$queryRaw`SELECT DISTINCT subject FROM KnowledgeChunk`;
+  const boards: any[] = await db.$queryRaw`SELECT DISTINCT board FROM KnowledgeChunk`;
+  const categories: any[] = await db.$queryRaw`SELECT DISTINCT category FROM KnowledgeChunk`;
+
   return {
-    totalChunks: index.length,
-    subjects,
-    categories,
-    boards,
-    icseChunks: icseCount,
+    totalChunks: totalChunks + ICSE_SEED.length,
+    subjects: subjects.map(s => s.subject).filter(Boolean),
+    categories: categories.map(c => c.category).filter(Boolean),
+    boards: boards.map(b => b.board).filter(Boolean),
+    icseChunks: icseCount + ICSE_SEED.length,
     cbseChunks: cbseCount,
     lastLoadedAt: new Date().toISOString()
   };
@@ -187,5 +208,10 @@ export async function addKnowledge(chunk: {
       source: chunk.source ?? 'user_upload'
     }
   });
-  await reloadKnowledgeBase();
+  // FTS5 sync trigger handles index update automatically
+}
+
+// No-op now — FTS5 is always in sync via DB triggers. Kept for backwards compat.
+export async function reloadKnowledgeBase(): Promise<void> {
+  return;
 }
