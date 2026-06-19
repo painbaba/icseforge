@@ -375,3 +375,31 @@ Stage Summary:
 - 1 FREE model still needs key: Groq (fastest, get free key at console.groq.com/keys)
 - Model selector moved to chat footer — more accessible, better UX
 - Verified: Mistral handles Java code questions perfectly with ICSE KB grounding
+
+---
+Task ID: 16
+Agent: main
+Task: Add GitHub Models API for free DeepSeek V3 + R1 access
+
+Work Log:
+- User provided GitHub PAT (github_pat_11CGK4QPI...) for testing DeepSeek V3
+- SECURITY: Warned user to rotate the token (leaked in chat)
+- Discovered GitHub Models API: ONE token gives FREE access to DeepSeek V3, DeepSeek R1, GPT-4o, Llama, and 200+ more
+- Tested endpoints: models.inference.ai.azure.com (400 unknown model) → models.github.ai/inference (✅ works!)
+- Catalog shows 3 DeepSeek models: deepseek/deepseek-r1, deepseek/deepseek-r1-0528, deepseek/deepseek-v3-0324
+- Tested deepseek/deepseek-r1 with "What is 15% of 240?" → ✅ returned with <think> chain-of-thought reasoning
+- Added GITHUB_TOKEN to .env
+- Updated src/lib/models.ts:
+  • Changed deepseek provider to use GitHub Models (free) when GITHUB_TOKEN is set, falls back to direct DeepSeek API otherwise
+  • Renamed to "DeepSeek V3 (via GitHub)" with free_tier: true
+  • Updated getClient() to route deepseek → GitHub Models endpoint (models.github.ai/inference)
+  • Updated MODEL_NAMES: deepseek → 'deepseek/deepseek-v3-0324' when GitHub token present
+- Tested end-to-end in browser: selected DeepSeek → asked calorimetry numerical → got correct answer (C = 42 J/°C) with full step-by-step working in 4.2s, no fallback
+- Lint clean
+
+Stage Summary:
+- DeepSeek V3 now FULLY WORKING (was failing with 402 Insufficient Balance on direct API)
+- Available models: 7 (was 5) — auto, glm, openai, deepseek (via GitHub), grok, gemini, mistral
+- DeepSeek is now FREE (via GitHub) instead of paid — better than original plan
+- GitHub Models also unlocks GPT-4o, Llama, Mistral Large, etc. for free if needed later
+- This is the SAME calorimetry answer AutoClaw demoed — our system now matches that quality at $0 cost

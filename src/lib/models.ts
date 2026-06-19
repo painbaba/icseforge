@@ -20,7 +20,8 @@ import OpenAI from 'openai';
 // ─── Model definitions ─────────────────────────────────────
 
 export type ModelId = 'auto' | 'glm' | 'openai' | 'deepseek' | 'grok' |
-  'openrouter' | 'groq' | 'gemini' | 'claude' | 'perplexity' | 'mistral';
+  'openrouter' | 'groq' | 'gemini' | 'claude' | 'perplexity' | 'mistral' |
+  'github';
 
 export interface ModelInfo {
   id: ModelId;
@@ -86,18 +87,19 @@ export const MODELS: Record<ModelId, ModelInfo> = {
   },
   deepseek: {
     id: 'deepseek',
-    name: 'DeepSeek V3',
-    provider: 'DeepSeek',
-    description: 'Best-in-class reasoning, cheapest chain-of-thought, strong math',
+    name: 'DeepSeek V3 (via GitHub)',
+    provider: 'GitHub Models',
+    description: 'Best-in-class reasoning, accessed FREE via GitHub Models API',
     capabilities: ['Reasoning', 'Math', 'Code', 'Long chain-of-thought'],
     best_for: ['Multi-step physics numericals', 'Calorimetry problems', 'Trigonometry proofs', 'Complex derivations'],
-    cost_per_1k_tokens: 0.0005,
+    cost_per_1k_tokens: 0,
     avg_latency_ms: 4000,
     reasoning: true,
     web_search_native: false,
-    available: !!process.env.DEEPSEEK_API_KEY,
-    why_better: 'Deep chain-of-thought reasoning at 10x cheaper than GPT-4o. Best for multi-step numerical problems.',
-    signup_url: 'https://platform.deepseek.com/api_keys'
+    available: !!(process.env.GITHUB_TOKEN || process.env.DEEPSEEK_API_KEY),
+    why_better: 'Deep chain-of-thought reasoning. FREE via GitHub Models (no balance needed). Best for multi-step numerical problems.',
+    free_tier: true,
+    signup_url: 'https://github.com/settings/tokens'
   },
   grok: {
     id: 'grok',
@@ -229,7 +231,15 @@ function getClient(provider: string): OpenAI {
       client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       break;
     case 'deepseek':
-      client = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: 'https://api.deepseek.com/v1' });
+      // Prefer GitHub Models (free) if GITHUB_TOKEN set, else direct DeepSeek API
+      if (process.env.GITHUB_TOKEN) {
+        client = new OpenAI({
+          apiKey: process.env.GITHUB_TOKEN,
+          baseURL: 'https://models.github.ai/inference'
+        });
+      } else {
+        client = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: 'https://api.deepseek.com/v1' });
+      }
       break;
     case 'grok':
       client = new OpenAI({ apiKey: process.env.XAI_API_KEY, baseURL: 'https://api.x.ai/v1' });
@@ -277,7 +287,7 @@ function getClient(provider: string): OpenAI {
 // Model name mapping per provider
 const MODEL_NAMES: Record<string, string> = {
   openai: 'gpt-4o',
-  deepseek: 'deepseek-reasoner',
+  deepseek: process.env.GITHUB_TOKEN ? 'deepseek/deepseek-v3-0324' : 'deepseek-reasoner',
   grok: 'grok-2',
   openrouter: 'anthropic/claude-3.5-sonnet', // default model via OpenRouter
   groq: 'llama-3.3-70b-versatile',
