@@ -1,0 +1,1006 @@
+{
+  "Biology": {
+    "subject": "Biology",
+    "total_questions_analyzed": 147,
+    "chapters": [
+      {
+        "chapter": "Ch12: The Endocrine System",
+        "question_count": 22,
+        "percentage": 15.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch6: Photosynthesis",
+        "question_count": 17,
+        "percentage": 11.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch10: The Nervous System",
+        "question_count": 15,
+        "percentage": 10.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch13: The Reproductive System",
+        "question_count": 15,
+        "percentage": 10.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch11: Sense Organs",
+        "question_count": 14,
+        "percentage": 9.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch4: Absorption by Roots: The Processes Involved",
+        "question_count": 14,
+        "percentage": 9.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch9: The Excretory System",
+        "question_count": 13,
+        "percentage": 8.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch2: Structure of Chromosomes, Cell Cycle and Cell Division",
+        "question_count": 7,
+        "percentage": 4.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch5: Transpiration",
+        "question_count": 6,
+        "percentage": 4.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch7: Chemical Coordination in Plants",
+        "question_count": 5,
+        "percentage": 3.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch16: Pollution: A Rising Environmental Problem",
+        "question_count": 4,
+        "percentage": 2.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Genetics: Some Basic Fundamentals",
+        "question_count": 3,
+        "percentage": 2.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: The Circulatory System",
+        "question_count": 3,
+        "percentage": 2.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch2: Structure of Chromosomes, Cell Cycle and Cell Division [2] Structure of Chromosomes, Cell Cycle and Cell Division",
+        "question_count": 3,
+        "percentage": 2.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch1: Cell - The Structural and Functional Unit of Life [For Revision Only]",
+        "question_count": 2,
+        "percentage": 1.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch2: Structure of Chromosomes, Cell Cycle and Cell Division [3] Genetics: Some Basic Fundamentals",
+        "question_count": 2,
+        "percentage": 1.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch15: Population: The Increasing Numbers and Rising Problems",
+        "question_count": 1,
+        "percentage": 0.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch14: Human Evolution",
+        "question_count": 1,
+        "percentage": 0.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "Chemistry": {
+    "subject": "Chemistry",
+    "total_questions_analyzed": 62,
+    "chapters": [
+      {
+        "chapter": "Ch11: Study of Compounds D. Sulphuric Acid",
+        "question_count": 14,
+        "percentage": 22.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch9: Study of Compounds B. Ammonia",
+        "question_count": 10,
+        "percentage": 16.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch4: Analytical Chemistry",
+        "question_count": 9,
+        "percentage": 14.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch8: Study of Compounds A. Hydrogen Chloride",
+        "question_count": 8,
+        "percentage": 12.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch1: Periodic Table, Periodic Properties and Variations of Properties",
+        "question_count": 8,
+        "percentage": 12.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch2: Chemical Bonding",
+        "question_count": 5,
+        "percentage": 8.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch13: Practical Work",
+        "question_count": 4,
+        "percentage": 6.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch10: Study of Compounds C. Nitric Acid",
+        "question_count": 3,
+        "percentage": 4.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch6: Electrolysis",
+        "question_count": 1,
+        "percentage": 1.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "Computer Applications": {
+    "subject": "Computer Applications",
+    "total_questions_analyzed": 47,
+    "chapters": [
+      {
+        "chapter": "Ch4: String Handling",
+        "question_count": 8,
+        "percentage": 17.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch2: Library Classes",
+        "question_count": 8,
+        "percentage": 17.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch3: Arrays (Single Dimensional and Double Dimensional)",
+        "question_count": 8,
+        "percentage": 17.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch5: User - Defined Methods",
+        "question_count": 5,
+        "percentage": 10.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch4: Operators in Java",
+        "question_count": 4,
+        "percentage": 8.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch7: Conditional Statements in Java",
+        "question_count": 4,
+        "percentage": 8.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch3: Values and Data Types",
+        "question_count": 3,
+        "percentage": 6.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: Encapsulation and Inheritance",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch1: Introduction to Object Oriented Programming Concepts",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch6: Mathematical Library Methods",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: Iterative Constructs in Java",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch9: Nested Loop",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch7: Constructors",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch6: Class as the Basis of All Computation (Objects and Classes)",
+        "question_count": 1,
+        "percentage": 2.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "Economics": {
+    "subject": "Economics",
+    "total_questions_analyzed": 31,
+    "chapters": [
+      {
+        "chapter": "Ch14: Consumer Awareness",
+        "question_count": 10,
+        "percentage": 32.3,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch13: Inflation",
+        "question_count": 7,
+        "percentage": 22.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch5: Meaning and Types of Markets",
+        "question_count": 7,
+        "percentage": 22.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch10: Public Revenue",
+        "question_count": 2,
+        "percentage": 6.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch11: Public Expenditure",
+        "question_count": 1,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: Central Bank",
+        "question_count": 1,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Elasticity of Demand",
+        "question_count": 1,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch4: Theory of Supply",
+        "question_count": 1,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch7: Commercial Banks",
+        "question_count": 1,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "English Language": {
+    "subject": "English Language",
+    "total_questions_analyzed": 93,
+    "chapters": [
+      {
+        "chapter": "Ch5: Grammar",
+        "question_count": 63,
+        "percentage": 67.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch4: Writing",
+        "question_count": 24,
+        "percentage": 25.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch4: Writing [4] Writing",
+        "question_count": 3,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Reading",
+        "question_count": 3,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "English Literature": {
+    "subject": "English Literature",
+    "total_questions_analyzed": 66,
+    "chapters": [
+      {
+        "chapter": "Ch3: Reading",
+        "question_count": 50,
+        "percentage": 75.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch4: Writing",
+        "question_count": 16,
+        "percentage": 24.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      }
+    ]
+  },
+  "Geography": {
+    "subject": "Geography",
+    "total_questions_analyzed": 137,
+    "chapters": [
+      {
+        "chapter": "Ch5: Soils in India",
+        "question_count": 31,
+        "percentage": 22.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch14: Industries in India Part II - Mineral-Based Industries",
+        "question_count": 24,
+        "percentage": 17.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch6: Natural Vegetation of India",
+        "question_count": 24,
+        "percentage": 17.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "HIGH"
+      },
+      {
+        "chapter": "Ch7: Water Resources",
+        "question_count": 16,
+        "percentage": 11.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch4: Climate of India",
+        "question_count": 8,
+        "percentage": 5.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch2: Map of India",
+        "question_count": 6,
+        "percentage": 4.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: Mineral and Energy Resources in India - Part I",
+        "question_count": 6,
+        "percentage": 4.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch13: Industries in India Part I -Agro Based Industries",
+        "question_count": 6,
+        "percentage": 4.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch1: Interpretation of Topographical Maps [4] Map Reading and Interpretation",
+        "question_count": 4,
+        "percentage": 2.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch12: Agriculture in India Part III - Cash Crops",
+        "question_count": 4,
+        "percentage": 2.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch2: Contours",
+        "question_count": 2,
+        "percentage": 1.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Location, Extent and Physical Features of India",
+        "question_count": 2,
+        "percentage": 1.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch16: Waste Management Part I - Impact of Waste Accumulation",
+        "question_count": 2,
+        "percentage": 1.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Scales and Direction",
+        "question_count": 1,
+        "percentage": 0.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch1: Interpretation of Topographical Maps [2] Contours",
+        "question_count": 1,
+        "percentage": 0.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "History & Civics": {
+    "subject": "History & Civics",
+    "total_questions_analyzed": 186,
+    "chapters": [
+      {
+        "chapter": "Ch1: The Union Parliament",
+        "question_count": 25,
+        "percentage": 13.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch2: The President and The Vice-President",
+        "question_count": 21,
+        "percentage": 11.3,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch4: The Supreme Court",
+        "question_count": 21,
+        "percentage": 11.3,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch6: Mahatma Gandhi and the Indian National Movement",
+        "question_count": 16,
+        "percentage": 8.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch1: The First War of Independence, 1857",
+        "question_count": 14,
+        "percentage": 7.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch5: The High Courts and Subordinate Courts",
+        "question_count": 13,
+        "percentage": 7.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch2: Growth of Nationalism",
+        "question_count": 11,
+        "percentage": 5.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch12: The Second World War",
+        "question_count": 10,
+        "percentage": 5.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch4: Second Phase of the Indian National Movement",
+        "question_count": 9,
+        "percentage": 4.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: Prime Minister and Council of Ministers",
+        "question_count": 7,
+        "percentage": 3.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch15: Non-Aligned Movement",
+        "question_count": 6,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch5: The Muslim League",
+        "question_count": 6,
+        "percentage": 3.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch14: Major Agencies of the United Nations",
+        "question_count": 5,
+        "percentage": 2.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch8: Forward Bloc and The INA",
+        "question_count": 5,
+        "percentage": 2.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch13: United Nations",
+        "question_count": 5,
+        "percentage": 2.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch10: The First World War",
+        "question_count": 4,
+        "percentage": 2.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch7: Quit India Movement",
+        "question_count": 3,
+        "percentage": 1.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch11: Rise of Dictatorships",
+        "question_count": 2,
+        "percentage": 1.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch3: First Phase of the Indian National Movement",
+        "question_count": 2,
+        "percentage": 1.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch9: Independence and Partition of India",
+        "question_count": 1,
+        "percentage": 0.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "Mathematics": {
+    "subject": "Mathematics",
+    "total_questions_analyzed": 64,
+    "chapters": [
+      {
+        "chapter": "Ch8: Remainder Theorem and Factor Theorem",
+        "question_count": 8,
+        "percentage": 12.5,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch7: Ratio and Proportion",
+        "question_count": 7,
+        "percentage": 10.9,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch5: Quadratic Equations",
+        "question_count": 6,
+        "percentage": 9.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch21: Trigonometrical Identities",
+        "question_count": 6,
+        "percentage": 9.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch2: Banking",
+        "question_count": 6,
+        "percentage": 9.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch10: Arithmetic Progression",
+        "question_count": 5,
+        "percentage": 7.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch6: Problems on Quadratic Equations",
+        "question_count": 5,
+        "percentage": 7.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch15: Similarity",
+        "question_count": 4,
+        "percentage": 6.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch13: Section and Mid-Point Formulae",
+        "question_count": 4,
+        "percentage": 6.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch12: Reflection",
+        "question_count": 3,
+        "percentage": 4.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch20: Volume and Surface Area of Solids (Cylinder, Cone and Sphere)",
+        "question_count": 3,
+        "percentage": 4.7,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch23: Graphical Representation of Statistical Data",
+        "question_count": 2,
+        "percentage": 3.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch16: Loci",
+        "question_count": 2,
+        "percentage": 3.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch17: Angle and Cyclic Properties of a Circle",
+        "question_count": 2,
+        "percentage": 3.1,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch19: Constructions",
+        "question_count": 1,
+        "percentage": 1.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  },
+  "Physics": {
+    "subject": "Physics",
+    "total_questions_analyzed": 166,
+    "chapters": [
+      {
+        "chapter": "Ch7: Sound",
+        "question_count": 22,
+        "percentage": 13.3,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch8: Current Electricity",
+        "question_count": 20,
+        "percentage": 12.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch2: Work, Energy and Power",
+        "question_count": 20,
+        "percentage": 12.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch12: Radioactivity",
+        "question_count": 16,
+        "percentage": 9.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch1: Force",
+        "question_count": 16,
+        "percentage": 9.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch3: Machines",
+        "question_count": 16,
+        "percentage": 9.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch10: Electro-Magnetism",
+        "question_count": 14,
+        "percentage": 8.4,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "MEDIUM"
+      },
+      {
+        "chapter": "Ch11: Calorimetry",
+        "question_count": 12,
+        "percentage": 7.2,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch4: Refraction of Light at Plane Surfaces",
+        "question_count": 10,
+        "percentage": 6.0,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch9: Household Circuits",
+        "question_count": 8,
+        "percentage": 4.8,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch5: Refraction Through a Lens",
+        "question_count": 6,
+        "percentage": 3.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      },
+      {
+        "chapter": "Ch6: Spectrum",
+        "question_count": 6,
+        "percentage": 3.6,
+        "avg_marks_per_q": 0,
+        "appears_in_years": 0,
+        "priority": "LOW"
+      }
+    ]
+  }
+}

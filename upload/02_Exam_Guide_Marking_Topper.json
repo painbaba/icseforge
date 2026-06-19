@@ -1,0 +1,719 @@
+{
+  "meta": {
+    "title": "ICSE Class 10 — Complete Exam Preparation Guide",
+    "board": "ICSE (CISCE)",
+    "class": 10,
+    "session": "2027 Examination",
+    "based_on": "57 real board & specimen papers (2021-2026) from Shaalaa.com",
+    "generated": "2026-06-19",
+    "note": "Marking scheme patterns derived from real paper data. Topper strategies compiled from standard ICSE examiner expectations."
+  },
+  "exam_overview": {
+    "typical_total_marks_per_subject": 80,
+    "exam_duration": "2 to 3 hours (varies by subject)",
+    "reading_time": "15 minutes (no writing allowed)",
+    "core_subjects": [
+      "English 1 (Language)",
+      "English 2 (Literature)",
+      "Mathematics",
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "History & Civics",
+      "Geography",
+      "Second Language (Hindi/Regional)",
+      "Elective (Computer/Economics/etc.)"
+    ]
+  },
+  "general_marking_scheme": {
+    "section_structure": {
+      "Section_A": {
+        "marks": 40,
+        "description": "Compulsory section. Tests all topics. Typically contains MCQs + short questions.",
+        "tip": "Attempt ALL questions. These are the easiest marks to secure."
+      },
+      "Section_B": {
+        "marks": 40,
+        "description": "Choice-based section. Usually attempt 4 out of 6-7 questions.",
+        "tip": "Choose questions where you can score full marks. Don't attempt extra."
+      }
+    },
+    "key_marking_rules": [
+      "Step-wise marking: Every correct step gets partial credit even if final answer is wrong",
+      "Keywords matter: Underline key scientific terms in Science answers",
+      "Formulas must be stated: In Math/Physics, write the formula before substituting values",
+      "Neatness counts: Labeled diagrams get bonus marks; messy work loses presentation marks",
+      "Units are mandatory: Missing units = minus marks in numerical problems",
+      "Word limits: Stick to them. Excess writing is not penalized but wastes time",
+      "Sub-parts: If Part A requires Part B's answer, Part B is marked independently"
+    ]
+  },
+  "subject_patterns": {
+    "Biology": {
+      "papers_analyzed": 7,
+      "typical_marks": 74,
+      "total_questions_in_pool": 510,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 290,
+          "pct": 56.9
+        },
+        "short_2_3_mark": {
+          "count": 153,
+          "pct": 30.0
+        },
+        "medium_4_5_mark": {
+          "count": 27,
+          "pct": 5.3
+        },
+        "long_6_10_mark": {
+          "count": 30,
+          "pct": 5.9
+        },
+        "essay_10plus_mark": {
+          "count": 10,
+          "pct": 2.0
+        }
+      },
+      "key_instructions": [
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":96300,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":434462,\"url\":\"allen-s-blood-report-showed-an-abnormal-decrease-in-the-number-of-rbc-he-is-suffering-from-______\",\"text_questions_0\":\"",
+        "Attempt all questions from Section A and any four questions from Section B.",
+        "Answers to this Paper must be written on the paper provided separately.",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":66205,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":368106,\"url\":\"the-sex-chromosome-in-a-human-ovum-is-______\",\"text_questions_0\":\"",
+        "Attempt all questions from Section A and any three questions from Section B."
+      ]
+    },
+    "Chemistry": {
+      "papers_analyzed": 5,
+      "typical_marks": 72,
+      "total_questions_in_pool": 449,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 307,
+          "pct": 68.4
+        },
+        "short_2_3_mark": {
+          "count": 99,
+          "pct": 22.0
+        },
+        "medium_4_5_mark": {
+          "count": 18,
+          "pct": 4.0
+        },
+        "long_6_10_mark": {
+          "count": 19,
+          "pct": 4.2
+        },
+        "essay_10plus_mark": {
+          "count": 6,
+          "pct": 1.3
+        }
+      },
+      "key_instructions": [
+        "The time given at the head of this Paper is the time allowed for writing the answers.",
+        "The intended marks for questions or parts of questions are given in brackets [ ].",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":66082,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":39258,\"url\":\"an-element-in-period-3-whose-electron-affinity-is-zero\",\"text_questions_0\":\"",
+        "You will not be allowed to write during first 15 minutes.",
+        "This time is to be spent in reading the question paper."
+      ]
+    },
+    "Computer Applications": {
+      "papers_analyzed": 4,
+      "typical_marks": 87,
+      "total_questions_in_pool": 138,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 85,
+          "pct": 61.6
+        },
+        "short_2_3_mark": {
+          "count": 24,
+          "pct": 17.4
+        },
+        "medium_4_5_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "long_6_10_mark": {
+          "count": 7,
+          "pct": 5.1
+        },
+        "essay_10plus_mark": {
+          "count": 22,
+          "pct": 15.9
+        }
+      },
+      "key_instructions": [
+        "The time given at the head of this Paper is the time allowed for writing the answers.",
+        "The intended marks for questions or parts of questions are given in brackets [ ].",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":65896,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":368186,\"url\":\"a-mechanism-where-one-class-acquires-the-properties-of-another-class\",\"text_questions_0\":\"",
+        "This time is to be spent in reading the question paper.",
+        "Attempt all questions from this Section.)"
+      ]
+    },
+    "Economics": {
+      "papers_analyzed": 3,
+      "typical_marks": 66,
+      "total_questions_in_pool": 157,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 49,
+          "pct": 31.2
+        },
+        "short_2_3_mark": {
+          "count": 73,
+          "pct": 46.5
+        },
+        "medium_4_5_mark": {
+          "count": 17,
+          "pct": 10.8
+        },
+        "long_6_10_mark": {
+          "count": 16,
+          "pct": 10.2
+        },
+        "essay_10plus_mark": {
+          "count": 2,
+          "pct": 1.3
+        }
+      },
+      "key_instructions": [
+        "The time given at the head of this Paper is the time allowed for writing the answers.",
+        "The intended marks for questions or parts of questions are given in brackets [ ].",
+        "Attempt all questions from this Section) \",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":65776,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":368025,\"url\":\"land-is-a-______-factor-of-production\",\"text_questions_0\":\"",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1.\"},{\"id\":102305,\"weight\":2,\"question_text\":\"1. (i)\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":445490,\"url\":\"in-economics-what-does-the-capital-earn-as-income\",\"text_questions_0\":\"",
+        "This time is to be spent in reading the question paper."
+      ]
+    },
+    "English 1": {
+      "papers_analyzed": 6,
+      "typical_marks": 71,
+      "total_questions_in_pool": 185,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 60,
+          "pct": 32.4
+        },
+        "short_2_3_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "medium_4_5_mark": {
+          "count": 25,
+          "pct": 13.5
+        },
+        "long_6_10_mark": {
+          "count": 23,
+          "pct": 12.4
+        },
+        "essay_10plus_mark": {
+          "count": 37,
+          "pct": 20.0
+        }
+      },
+      "key_instructions": [
+        "The time given at the head of this Paper is the time allowed for writing the answers.",
+        "The intended marks for questions or parts of questions are given in brackets [ ].",
+        "This time is to be spent in reading the question paper.",
+        "This time is to be spent reading the question paper.",
+        "You are advised to spend not more than 30 minutes in answering Question 1 and 20 minutes in answering Question 2."
+      ]
+    },
+    "English 2": {
+      "papers_analyzed": 5,
+      "typical_marks": 80,
+      "total_questions_in_pool": 114,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 80,
+          "pct": 70.2
+        },
+        "short_2_3_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "medium_4_5_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "long_6_10_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "essay_10plus_mark": {
+          "count": 34,
+          "pct": 29.8
+        }
+      },
+      "key_instructions": [
+        "The time given at the head of this Paper is the time allowed for writing the answers.",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":72088,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":377324,\"url\":\"where-does-portia-say-that-she-and-narissa-will-stay-until-their-husbands-return\",\"text_questions_0\":\"",
+        "The intended marks for questions or parts of questions are given in brackets [ ].",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":73187,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":379370,\"url\":\"where-was-caesar-put-to-death\",\"text_questions_0\":\"",
+        "Attempt all questions from this Section.) \",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":65686,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":368136,\"url\":\"what-was-the-blue-bead\",\"text_questions_0\":\""
+      ]
+    },
+    "Geography": {
+      "papers_analyzed": 7,
+      "typical_marks": 74,
+      "total_questions_in_pool": 670,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 358,
+          "pct": 53.4
+        },
+        "short_2_3_mark": {
+          "count": 243,
+          "pct": 36.3
+        },
+        "medium_4_5_mark": {
+          "count": 0,
+          "pct": 0.0
+        },
+        "long_6_10_mark": {
+          "count": 69,
+          "pct": 10.3
+        },
+        "essay_10plus_mark": {
+          "count": 0,
+          "pct": 0.0
+        }
+      },
+      "key_instructions": [
+        "Attempt all questions from this Part)\",\"is_section\":false,\"questions\":[{\"id\":377629,\"url\":\"study-the-extract-of-the-survey-of-india-map-sheet-no-g43s7-and-answer-the-following-question-give-the-six-figure-grid-reference-for-spot-height-522\",\"text_questions_0\":\"",
+        "Answers to this Paper must be written on the paper provided separately.",
+        "Attempt all questions from Section A and any three questions from Section B.",
+        "You will not be allowed to write during the first 10 minutes.",
+        "All working including rough work should be done on the same answer sheet which is used to answer the rest of the paper."
+      ]
+    },
+    "History": {
+      "papers_analyzed": 7,
+      "typical_marks": 74,
+      "total_questions_in_pool": 387,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 122,
+          "pct": 31.5
+        },
+        "short_2_3_mark": {
+          "count": 169,
+          "pct": 43.7
+        },
+        "medium_4_5_mark": {
+          "count": 39,
+          "pct": 10.1
+        },
+        "long_6_10_mark": {
+          "count": 46,
+          "pct": 11.9
+        },
+        "essay_10plus_mark": {
+          "count": 11,
+          "pct": 2.8
+        }
+      },
+      "key_instructions": [
+        "Attempt all questions from this Part.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":66392,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":368620,\"url\":\"an-ordinance-has-to-be-approved-by-the-parliament-within-______-weeks\",\"text_questions_0\":\"",
+        "Answers to this Paper must be written on the paper provided separately.",
+        "You will not be allowed to write during the first 10 minutes.",
+        "Attempt all questions from this Part.)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":75076,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":379403,\"url\":\"on-may-19-2023-the-president-of-india-exercised-legislative-power-under-article-123-of-the-constitution-during-the-period-parliament-was-in-recess-to-promulgate\",\"text_questions_0\":\"",
+        "Attempt all questions from this Part)\",\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":44744,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":292413,\"url\":\"the-procedure-to-remove-the-president-is-called-______\",\"text_questions_0\":\""
+      ]
+    },
+    "Mathematics": {
+      "papers_analyzed": 6,
+      "typical_marks": 80,
+      "total_questions_in_pool": 299,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 92,
+          "pct": 30.8
+        },
+        "short_2_3_mark": {
+          "count": 72,
+          "pct": 24.1
+        },
+        "medium_4_5_mark": {
+          "count": 83,
+          "pct": 27.8
+        },
+        "long_6_10_mark": {
+          "count": 35,
+          "pct": 11.7
+        },
+        "essay_10plus_mark": {
+          "count": 17,
+          "pct": 5.7
+        }
+      },
+      "key_instructions": [
+        "The intended marks for questions or parts of questions are given in brackets [ ]",
+        "Attempt all questions from",
+        "Omission of essential working will result in loss of marks.",
+        "Attempt all questions from Section A and any four questions from Section B.",
+        "Answers to this Paper must be written on the paper provided separately."
+      ]
+    },
+    "Physics": {
+      "papers_analyzed": 7,
+      "typical_marks": 74,
+      "total_questions_in_pool": 466,
+      "question_type_breakdown": {
+        "MCQ_1_mark": {
+          "count": 219,
+          "pct": 47.0
+        },
+        "short_2_3_mark": {
+          "count": 161,
+          "pct": 34.5
+        },
+        "medium_4_5_mark": {
+          "count": 36,
+          "pct": 7.7
+        },
+        "long_6_10_mark": {
+          "count": 38,
+          "pct": 8.2
+        },
+        "essay_10plus_mark": {
+          "count": 10,
+          "pct": 2.1
+        }
+      },
+      "key_instructions": [
+        "Attempt all questions from Section A and any four questions from Section B.",
+        "Answers to this Paper must be written on the paper provided separately.",
+        "Attempt all questions from this Section.)\",\"is_section\":false,\"questions\":null,\"q\":\"1.\"},{\"id\":103764,\"weight\":2,\"question_text\":\"1. (i)\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":446554,\"url\":\"a-body-is-acted-upon-by-two-equal-and-opposite-forces-that-are-not-along-the-same-straight-line-the-body-will-______\",\"text_questions_0\":\"",
+        "Attempt all questions from Section A and any three questions from Section B.",
+        "Attempt all questions from this Section.)\",\"pre_text\":null,\"is_section\":false,\"questions\":null,\"q\":\"1\"},{\"id\":44290,\"weight\":2,\"question_text\":\"1.i\",\"text\":null,\"score\":1,\"pre_name\":null,\"pre_text\":null,\"is_section\":false,\"questions\":[{\"id\":292690,\"url\":\"pendulums-a-b-c-and-d-are-tied-to-a-flexible-string-pq-and-are-at-rest-pendulum-c-is-disturbed-which-of-the-following-statements-is-true\",\"text_questions_0\":\""
+      ]
+    }
+  },
+  "subject_specific_strategies": {
+    "English Language": {
+      "composition_essay": {
+        "marks": 20,
+        "tip": "Choose the topic you have most content for. Outline before writing. Types: Story, Argumentative, Descriptive, Picture Composition, Narrative.",
+        "scoring_factors": [
+          "Originality",
+          "Organization",
+          "Vocabulary",
+          "Grammar",
+          "Relevance"
+        ]
+      },
+      "letter_writing": {
+        "marks": 10,
+        "tip": "Format is everything. Formal letter: Sender address, Date, Receiver address, Subject, Salutation, Body, Subscription. Informal: Date, Salutation, Body.",
+        "scoring_factors": [
+          "Correct format",
+          "Appropriate tone",
+          "Content completeness"
+        ]
+      },
+      "comprehension": {
+        "marks": 20,
+        "tip": "Read questions FIRST, then passage. Answer in your own words — don't lift verbatim from text.",
+        "scoring_factors": [
+          "Accuracy",
+          "Own words",
+          "Brevity"
+        ]
+      },
+      "grammar": {
+        "marks": 20,
+        "tip": "Practice: Tenses, Prepositions, Conjunctions, Transformation, Sentence completion. These are high-scoring if prepared.",
+        "scoring_factors": [
+          "Accuracy",
+          "Precision"
+        ]
+      }
+    },
+    "English Literature": {
+      "drama_prose": {
+        "marks": "40 (4 questions × 10 marks each)",
+        "tip": "Quote lines from the text. Reference act/scene or chapter. Don't narrate the story — analyze it.",
+        "scoring_factors": [
+          "Textual references",
+          "Analysis depth",
+          "Expression"
+        ]
+      },
+      "poetry": {
+        "marks": "20 (2 questions × 10 marks each)",
+        "tip": "Learn ALL poems. Know the poet, theme, literary devices. Quote lines to support answers.",
+        "scoring_factors": [
+          "Quoting",
+          "Theme understanding",
+          "Literary devices identified"
+        ]
+      }
+    },
+    "Mathematics": {
+      "section_a": {
+        "marks": 40,
+        "content": "Compulsory: 4 questions covering all topics",
+        "tip": "Show ALL working steps. Even if final answer is wrong, steps earn marks. Write formula first.",
+        "key_topics": [
+          "Quadratic Equations",
+          "Shares & Dividends",
+          "Linear Inequations",
+          "Matrices",
+          "Arithmetic Progression",
+          "Similarity",
+          "Circles",
+          "Mensuration",
+          "Trigonometry",
+          "Statistics"
+        ]
+      },
+      "section_b": {
+        "marks": 40,
+        "content": "Answer any 4 of 7 questions",
+        "tip": "Choose questions with parts you can SOLVE COMPLETELY. Don't pick a question where you can do only half.",
+        "key_topics": [
+          "Goods & Services Tax (GST)",
+          "Banking",
+          "Coordinate Geometry",
+          "Loci",
+          "Probability",
+          "Graphical Representation"
+        ]
+      },
+      "topper_secrets": [
+        "Learn the step-marking pattern: Each correct step = 0.5 to 1 mark",
+        "Rough work must be shown on the same sheet in a separate column",
+        "Graph questions: Use proper scale, label axes, plot points carefully",
+        "Construction questions: Leave all construction arcs visible — don't erase them",
+        "Memorize ALL formulas — write them on the first page during reading time"
+      ]
+    },
+    "Physics": {
+      "section_a": {
+        "marks": 40,
+        "format": "Q1: 15 MCQs (1 mark each) + Q2: 10 marks (fill in blanks, match, short) + Q3: 15 marks (mixed)",
+        "tip": "MCQs are pure knowledge — revise thoroughly. Q3 has numericals that require step-by-step working."
+      },
+      "section_b": {
+        "marks": 40,
+        "format": "Answer any 4 of 6 questions (10 marks each)",
+        "tip": "Each question has 3 sub-parts: (i) 3 marks, (ii) 3 marks, (iii) 4 marks. Attempt full questions."
+      },
+      "key_chapters": [
+        "Force",
+        "Work/Energy/Power",
+        "Machines",
+        "Refraction",
+        "Lenses",
+        "Spectrum",
+        "Sound",
+        "Current Electricity",
+        "Household Circuits",
+        "Calorimetry",
+        "Radioactivity"
+      ],
+      "topper_secrets": [
+        "RAY DIAGRAMS: Draw with pencil and ruler. Label ALL points (O, F, 2F, etc.).",
+        "Numericals: Write Given data → Formula → Substitution → Answer with unit",
+        "Definitions must be PRECISE — use textbook language exactly",
+        "Circuit diagrams: Use proper symbols, sharp corners",
+        "Reason/Assertion questions: Read both statements independently"
+      ]
+    },
+    "Chemistry": {
+      "section_a": {
+        "marks": 40,
+        "format": "Q1: MCQs + Q2 & Q3: Short structured questions"
+      },
+      "section_b": {
+        "marks": 40,
+        "format": "Answer any 4 of 6 (10 marks each)"
+      },
+      "key_chapters": [
+        "Periodic Table",
+        "Chemical Bonding",
+        "Acids/Bases/Salts",
+        "Analytical Chemistry",
+        "Mole Concept",
+        "Electrolysis",
+        "Metallurgy",
+        "Organic Chemistry"
+      ],
+      "topper_secrets": [
+        "EQUATIONS MUST BE BALANCED — unbalanced = half marks",
+        "State symbols: (s), (l), (g), (aq) — include them",
+        "Organic chemistry: Learn functional groups table by heart",
+        "Observations: Use correct color descriptions (e.g., 'reddish-brown' not 'brown')",
+        "Ionic equations: Show ions separately for electrolysis questions",
+        "Lab preparation diagrams: Label all parts including delivery tube, thistle funnel"
+      ]
+    },
+    "Biology": {
+      "section_a": {
+        "marks": 40,
+        "format": "Q1: MCQs + Q2 & Q3: Short structured"
+      },
+      "section_b": {
+        "marks": 40,
+        "format": "Answer any 4 of 6 (10 marks each)"
+      },
+      "key_chapters": [
+        "Cell Division",
+        "Genetics",
+        "Plant Physiology (Transpiration, Photosynthesis)",
+        "Human Anatomy (Circulatory, Excretory, Nervous, Endocrine, Reproductive)",
+        "Health & Diseases",
+        "Pollution"
+      ],
+      "topper_secrets": [
+        "DIAGRAMS are worth 30-40% of marks — draw large, neat, labeled with pointer lines",
+        "Use biological terms exactly as in textbook (e.g., 'erythrocytes' not 'red blood cells' in certain contexts)",
+        "Differences/tabulations: Use ruled lines, parallel points, matching columns",
+        "Flow charts for processes (e.g., blood clotting, urine formation) get bonus marks",
+        "Spell scientific terms correctly — marks deducted for spelling errors in key terms"
+      ]
+    },
+    "History & Civics": {
+      "section_a_civics": {
+        "marks": 20,
+        "format": "Q1 + Q2: Union Parliament, Executive, Judiciary"
+      },
+      "section_b_history": {
+        "marks": 40,
+        "format": "Answer any 2 of 3 (20 marks each) from Indian History + World History"
+      },
+      "key_topics": [
+        "Union Parliament",
+        "Prime Minister & Council of Ministers",
+        "Supreme Court",
+        "First War of Independence 1857",
+        "Indian National Movement (1885-1947)",
+        "UN & Major Agencies",
+        "World Wars"
+      ],
+      "topper_secrets": [
+        "Dates/Years are CRITICAL — examiner looks for them first",
+        "Answer structure: Introduction → Main content (3-4 paragraphs) → Conclusion",
+        "Civics answers need article numbers and constitutional provisions",
+        "For leaders, mention: Born-Died, Role, Contribution, Assessment",
+        "Maps: Practice marking locations precisely"
+      ]
+    },
+    "Geography": {
+      "section_a": {
+        "marks": 40
+      },
+      "section_b": {
+        "marks": 40,
+        "format": "Answer any 4 of 6"
+      },
+      "key_topics": [
+        "Topographical Maps",
+        "Climate of India",
+        "Soils",
+        "Natural Vegetation",
+        "Water Resources",
+        "Minerals",
+        "Agriculture",
+        "Industries",
+        "Transport",
+        "Waste Management"
+      ],
+      "topper_secrets": [
+        "MAP WORK (10 marks on topo map): Practice 6-figure grid references, drainage patterns, settlement types",
+        "India map: Mark locations accurately with proper symbols from the legend",
+        "Climate: Know the rainfall distribution map — a question every year",
+        "Soil table: Type + Formation + Regions + Crops — make a 4-column chart",
+        "Use geographical terms: 'Leeward side', 'Rain shadow', 'Alluvial', 'Laterite' etc."
+      ]
+    },
+    "Computer Applications": {
+      "section_a": {
+        "marks": 50,
+        "format": "Compulsory: Theory questions — MCQs + short answers"
+      },
+      "section_b": {
+        "marks": 50,
+        "format": "Answer any 2 of 4 programming problems"
+      },
+      "key_topics": [
+        "Java Basics (Data types, Operators, Control flow)",
+        "Classes & Objects",
+        "Arrays",
+        "Strings",
+        "Encapsulation & Inheritance",
+        "Iteration & Recursion"
+      ],
+      "topper_secrets": [
+        "Program questions: Write algorithm/flowchart first, then code",
+        "Comment your code — shows understanding",
+        "Variable naming: Use meaningful names (not just a, b, c)",
+        "Syntax: Semicolons, brackets, indentation — marks for proper formatting",
+        "Dry run your program with sample input to verify output"
+      ]
+    },
+    "Economics": {
+      "section_a": {
+        "marks": 40,
+        "format": "Compulsory: Short answer + structured questions"
+      },
+      "section_b": {
+        "marks": 40,
+        "format": "Answer any 4 of 6"
+      },
+      "key_topics": [
+        "Demand & Supply",
+        "Elasticity",
+        "Factors of Production",
+        "Types of Markets",
+        "Banking & Money",
+        "Public Finance",
+        "Consumer Awareness"
+      ],
+      "topper_secrets": [
+        "Definitions must be textbook-precise (e.g., 'Demand is desire backed by ability and willingness to pay')",
+        "Diagrams: Demand/supply curves must be properly labeled with D, S, P, Q on axes",
+        "Real-world examples: Mention current economic events to show understanding",
+        "Distinguish questions: Use table format for differences"
+      ]
+    }
+  },
+  "topper_universal_strategies": {
+    "during_exam": [
+      "READING TIME (15 min): Scan the entire paper. Identify easy questions. Plan Section B choices.",
+      "Start with your STRONGEST section — builds confidence and momentum",
+      "MCQs first: 15 marks in 5-7 minutes. Don't overthink — first instinct is usually right",
+      "NEVER leave a question blank. Write SOMETHING — you may get partial marks",
+      "Maintain time discipline: 80 marks in 120-180 minutes = roughly 1.5 min per mark",
+      "Leave 10 minutes at the end for revision — check numbering, units, spellings",
+      "Diagrams: Draw with PENCIL only. Label with pen. Use a ruler for straight lines.",
+      "If stuck on a numerical, write the formula and given data — you'll get 1 mark minimum"
+    ],
+    "answer_presentation": [
+      "Start each new question on a FRESH PAGE (if allowed)",
+      "Write question number prominently in the left margin",
+      "Underline key terms, definitions, and formulas",
+      "For long answers: Use paragraphs, not one block of text",
+      "For compare/contrast: Use a TABLE format — examiners love it",
+      "Leave a line between sub-parts for clarity",
+      "Number your answers EXACTLY as in the question paper"
+    ],
+    "before_exam": [
+      "Solve last 5 years' papers under timed conditions",
+      "Create a formula sheet / key terms sheet per subject — review it daily",
+      "Focus on diagrams: Redraw important diagrams 3-4 times before exam",
+      "Sleep well before exam — tired brain = silly mistakes",
+      "Reach exam center 30 minutes early with all stationery (2 pens, 2 pencils, eraser, ruler, sharpener)"
+    ],
+    "common_mistakes_to_avoid": [
+      "❌ Writing more than asked — doesn't get extra marks, wastes time",
+      "❌ Attempting extra questions in Section B — only first 4 are checked",
+      "❌ Missing units in numerical answers",
+      "❌ Unbalanced chemical equations",
+      "❌ Unlabeled diagrams",
+      "❌ Wrong question numbering",
+      "❌ Spending too much time on one question"
+    ]
+  }
+}

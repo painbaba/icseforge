@@ -1,0 +1,451 @@
+{
+  "biology": {
+    "subject": "Biology",
+    "papers": [
+      {
+        "file": "biology_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 40
+      },
+      {
+        "file": "biology_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 78
+      },
+      {
+        "file": "biology_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 77
+      },
+      {
+        "file": "biology_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 67
+      },
+      {
+        "file": "biology_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 94
+      },
+      {
+        "file": "biology_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 68
+      },
+      {
+        "file": "biology_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 86
+      }
+    ]
+  },
+  "chemistry": {
+    "subject": "Chemistry",
+    "papers": [
+      {
+        "file": "chemistry_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 77
+      },
+      {
+        "file": "chemistry_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 123
+      },
+      {
+        "file": "chemistry_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 72
+      },
+      {
+        "file": "chemistry_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 66
+      },
+      {
+        "file": "chemistry_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 111
+      }
+    ]
+  },
+  "computer-applications": {
+    "subject": "Computer Applications",
+    "papers": [
+      {
+        "file": "computer-applications_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 50,
+        "questions": 17
+      },
+      {
+        "file": "computer-applications_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 100,
+        "questions": 46
+      },
+      {
+        "file": "computer-applications_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 100,
+        "questions": 38
+      },
+      {
+        "file": "computer-applications_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 100,
+        "questions": 37
+      }
+    ]
+  },
+  "economics": {
+    "subject": "Economics",
+    "papers": [
+      {
+        "file": "economics_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 43
+      },
+      {
+        "file": "economics_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 64
+      },
+      {
+        "file": "economics_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 50
+      }
+    ]
+  },
+  "english1": {
+    "subject": "English Language",
+    "papers": [
+      {
+        "file": "english1_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 38
+      },
+      {
+        "file": "english1_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 38
+      },
+      {
+        "file": "english1_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 31
+      },
+      {
+        "file": "english1_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 38
+      },
+      {
+        "file": "english1_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 34
+      },
+      {
+        "file": "english1_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 30,
+        "questions": 6
+      }
+    ]
+  },
+  "english2": {
+    "subject": "English Literature",
+    "papers": [
+      {
+        "file": "english2_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 23
+      },
+      {
+        "file": "english2_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 23
+      },
+      {
+        "file": "english2_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 22
+      },
+      {
+        "file": "english2_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 23
+      },
+      {
+        "file": "english2_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 23
+      }
+    ]
+  },
+  "geography": {
+    "subject": "Geography",
+    "papers": [
+      {
+        "file": "geography_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 45
+      },
+      {
+        "file": "geography_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 121
+      },
+      {
+        "file": "geography_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 111
+      },
+      {
+        "file": "geography_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 83
+      },
+      {
+        "file": "geography_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 110
+      },
+      {
+        "file": "geography_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 96
+      },
+      {
+        "file": "geography_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 104
+      }
+    ]
+  },
+  "history-civics": {
+    "subject": "History & Civics",
+    "papers": [
+      {
+        "file": "history-civics_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 32
+      },
+      {
+        "file": "history-civics_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 59
+      },
+      {
+        "file": "history-civics_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 57
+      },
+      {
+        "file": "history-civics_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 58
+      },
+      {
+        "file": "history-civics_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 59
+      },
+      {
+        "file": "history-civics_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 63
+      },
+      {
+        "file": "history-civics_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 59
+      }
+    ]
+  },
+  "mathematics": {
+    "subject": "Mathematics",
+    "papers": [
+      {
+        "file": "mathematics_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 51
+      },
+      {
+        "file": "mathematics_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 53
+      },
+      {
+        "file": "mathematics_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 42
+      },
+      {
+        "file": "mathematics_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 51
+      },
+      {
+        "file": "mathematics_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 51
+      },
+      {
+        "file": "mathematics_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 51
+      }
+    ]
+  },
+  "physics": {
+    "subject": "Physics",
+    "papers": [
+      {
+        "file": "physics_2021-22_board.json",
+        "year": "2021-2022",
+        "type": "",
+        "marks": 40,
+        "questions": 41
+      },
+      {
+        "file": "physics_2022-23_board.json",
+        "year": "2022-2023",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 84
+      },
+      {
+        "file": "physics_2023-24_board.json",
+        "year": "2023-2024",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 79
+      },
+      {
+        "file": "physics_2024-25_board.json",
+        "year": "2024-2025",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 56
+      },
+      {
+        "file": "physics_2024-25_specimen.json",
+        "year": "2024-2025",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 83
+      },
+      {
+        "file": "physics_2025-26_board.json",
+        "year": "2025-2026",
+        "type": "Official Board Paper",
+        "marks": 80,
+        "questions": 58
+      },
+      {
+        "file": "physics_2025-26_specimen.json",
+        "year": "2025-2026",
+        "type": "Specimen Paper",
+        "marks": 80,
+        "questions": 65
+      }
+    ]
+  }
+}

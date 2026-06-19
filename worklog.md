@@ -119,3 +119,50 @@ Stage Summary:
 - The 7-agent pipeline will now retrieve ACTUAL high-scoring exemplar content when generating projects, not just format guidance.
 - 3 of the 7 uploaded files were empty (data collection scripts ran but found nothing) — user may want to re-run those scrapers with different sources.
 - Ingestion script is reusable: user can drop more files in /upload/ and re-run `bun run scripts/ingest-collected-data.ts` after editing the script.
+
+---
+Task ID: 4
+Agent: frontend-styling-expert
+Task: Build ICSE Tutor chatbot UI component
+
+Work Log:
+- Read worklog.md to understand prior agent work (emerald --brand palette, flex-column sticky-footer pattern, shadcn component audit, prose-icse markdown styling)
+- Read existing tab components (KnowledgeBaseTab, MockGeneratorTab, OutputViewer) and types.ts to lock the exact visual idiom: bg-brand text-brand-foreground buttons, bg-brand/15 text-brand border-brand/30 badges, prose-icse for markdown, motion from framer-motion, toast from sonner
+- Read /api/chat route + /lib/chat.ts to verify response shape: { sessionId, answer, reasoning?, sources:[{title,subject,chapter,category}], cached, durationMs }
+- Audited available shadcn components (Card, Button, Textarea, Select, Switch, Badge, Tooltip, Accordion, Skeleton, ScrollArea, Alert) — all present in src/components/ui/
+- Created ONE file: src/components/icse/TutorTab.tsx (a 'use client' component with signature `export function TutorTab()`)
+- Implemented full chatbot UI:
+  • Card with header row (Brain icon + "ICSE AI Tutor" title + "Reasoning-powered · RAG-grounded on 2700+ real past questions" subtitle on left; subject Select + Clear icon button on right)
+  • Messages area: role="log", aria-live="polite", max-h-[500px] overflow-y-auto, bordered bg-muted/20 container
+  • Empty state: 6 suggested question chips (matches the exact list in the brief), each a motion.button with staggered entrance + Lightbulb icon, hover lifts to brand-soft bg
+  • User message bubble: right-aligned, bg-brand text-brand-foreground, rounded-2xl with rounded-br-md corner
+  • Assistant message card: left-aligned with Brain avatar + bg-card border card, contains: prose-icse markdown answer, collapsible "Show reasoning" toggle (animated height via framer-motion, defaults collapsed, brand-soft bg), sources chips (BookOpen header + clickable chips with Tooltip showing full title + chapter), footer with ⚡ cached badge (amber-strong) + durationMs formatted as ms/s with tabular-nums
+  • Loading indicator: animated 3-dot pulse (Brain icon + staggered opacity/y animation), sr-only "Tutor is thinking" label
+  • Error alert: red-tinted card with AlertCircle + Retry button (calls last user message again without duplicating it)
+  • Input row: Textarea (auto-grow via field-sizing-content, max-h-200px, Enter sends / Shift+Enter newline) + Send button (bg-brand, shows Loader2 spinner while loading)
+  • Footer of input: Force reasoning Switch + "new session"/"session xxxxxxxx…" mono label
+  • Session management: first message has no sessionId → API returns one → stored in state and reused; Clear button calls DELETE /api/chat?sessionId=... then resets state
+  • Subject filter: 'auto' (default) sends no subject; explicit subjects (Physics/Chemistry/Biology/Mathematics/History/Geography/English/Computer/Economics) pass subject to API
+- Accessibility: role="log" + aria-live="polite" on messages, aria-label on Send / Clear / Switch / Textarea / Select, aria-expanded+aria-controls on reasoning toggle, sr-only label on loading indicator, focus-visible ring on all interactive elements, keyboard accessible (Enter/Shift+Enter)
+- Responsive: max-w-3xl mx-auto on the outer wrapper; header row stacks on mobile (flex-col → sm:flex-row); Send button text hidden on mobile (icon-only); suggested-question grid is 1-col mobile / 2-col sm
+- Honored constraints: 'use client' at top, ONLY one file created (no page.tsx modification), all fetches use relative paths, no indigo/blue (only emerald --brand, amber-strong, destructive), matches existing visual idiom of other tabs
+- Ran `bun run lint` → 0 errors, 0 warnings (clean)
+- Ran `npx tsc --noEmit` → no errors in src/components/icse/TutorTab.tsx (only pre-existing unrelated errors in examples/ and skills/ directories)
+- Verified dev server: GET http://localhost:3000/ → 200 OK
+
+Stage Summary:
+- File produced: src/components/icse/TutorTab.tsx (~640 lines, fully self-contained, manages its own state, no props)
+- Lint: clean (0 errors, 0 warnings)
+- TypeScript: clean for the new file
+- Component is ready to be wired into src/app/page.tsx — main agent should add a 5th tab:
+    <TabsTrigger value="tutor" className="gap-1.5 py-2">
+      <Brain className="size-4" /> AI Tutor
+    </TabsTrigger>
+  ... and:
+    <TabsContent value="tutor" className="mt-6 outline-none">
+      <TutorTab />
+    </TabsContent>
+  Plus imports: `import { Brain } from 'lucide-react';` and `import { TutorTab } from '@/components/icse/TutorTab';`
+  Note: the TabsList grid is currently `grid-cols-2 sm:grid-cols-4` — when adding a 5th tab, change to `grid-cols-2 sm:grid-cols-5` (or keep 4 + wrap).
+- Behavior verified against /api/chat contract: POST returns { sessionId, answer, reasoning?, sources, cached, durationMs } — all consumed correctly; GET and DELETE also wired
+- No issues / no blockers

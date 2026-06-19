@@ -1,0 +1,554 @@
+{
+  "Physics": {
+    "Force": {
+      "key_terms": [
+        "Translational motion",
+        "Rotational motion",
+        "Torque",
+        "Couple",
+        "Moment of force",
+        "Centre of gravity",
+        "Uniform circular motion",
+        "Centripetal force"
+      ],
+      "formulas": [
+        "Moment of force = Force × Perpendicular distance (τ = F × d)",
+        "Torque of couple = Force × Arm of couple",
+        "Centripetal force = mv²/r",
+        "1 kgf = 9.8 N (approx 10 N)",
+        "Principle of moments: Sum of clockwise moments = Sum of anticlockwise moments"
+      ]
+    },
+    "Work, Energy and Power": {
+      "key_terms": [
+        "Work",
+        "Energy",
+        "Kinetic energy",
+        "Potential energy",
+        "Power",
+        "Conservation of energy",
+        "Joule"
+      ],
+      "formulas": [
+        "Work = Force × Displacement × cos θ (W = Fd cos θ)",
+        "Kinetic Energy = ½mv²",
+        "Potential Energy = mgh",
+        "Power = Work/Time = Energy/Time",
+        "1 HP = 746 W",
+        "1 kWh = 3.6 × 10⁶ J"
+      ]
+    },
+    "Machines": {
+      "key_terms": [
+        "Load",
+        "Effort",
+        "Mechanical Advantage",
+        "Velocity Ratio",
+        "Efficiency",
+        "Lever (Class I, II, III)",
+        "Pulley",
+        "Inclined plane"
+      ],
+      "formulas": [
+        "MA = Load/Effort",
+        "VR = Distance moved by effort/Distance moved by load",
+        "Efficiency η = (MA/VR) × 100% = (Work output/Work input) × 100%",
+        "For ideal machine: MA = VR, η = 100%",
+        "For single fixed pulley: MA = 1, VR = 1",
+        "For single movable pulley: MA = 2, VR = 2",
+        "For block & tackle with n pulleys: VR = n"
+      ]
+    },
+    "Refraction at Plane Surfaces": {
+      "key_terms": [
+        "Refraction",
+        "Refractive index",
+        "Snell's law",
+        "Critical angle",
+        "Total internal reflection",
+        "Real depth",
+        "Apparent depth"
+      ],
+      "formulas": [
+        "Refractive index μ = sin i / sin r = c/v",
+        "μ = Real depth / Apparent depth",
+        "sin C = 1/μ (Critical angle)",
+        "μ = Speed of light in vacuum / Speed of light in medium",
+        "Lateral displacement = t sin(i-r)/cos r",
+        "Shift = Real depth − Apparent depth = t(1 − 1/μ)"
+      ]
+    },
+    "Lenses": {
+      "key_terms": [
+        "Convex lens",
+        "Concave lens",
+        "Focal length",
+        "Principal focus",
+        "Optical centre",
+        "Magnification",
+        "Power of lens"
+      ],
+      "formulas": [
+        "Lens formula: 1/f = 1/v − 1/u",
+        "Magnification m = v/u = h'/h",
+        "Power P = 1/f (in metres), unit: Dioptre (D)",
+        "For convex lens: f positive; For concave lens: f negative",
+        "Sign convention: u is always negative for real objects"
+      ]
+    },
+    "Spectrum": {
+      "key_terms": [
+        "Dispersion",
+        "White light",
+        "VIBGYOR",
+        "Prism",
+        "Electromagnetic spectrum",
+        "Infrared",
+        "Ultraviolet",
+        "Scattering"
+      ],
+      "formulas": [
+        "Deviation δ = (μ−1)A (for thin prism)",
+        "Red light: least deviated, longest wavelength",
+        "Violet light: most deviated, shortest wavelength",
+        "Rayleigh scattering ∝ 1/λ⁴"
+      ]
+    },
+    "Sound": {
+      "key_terms": [
+        "Frequency",
+        "Amplitude",
+        "Pitch",
+        "Loudness",
+        "Quality",
+        "Ultrasound",
+        "Infrasonic",
+        "Echo",
+        "Sonar"
+      ],
+      "formulas": [
+        "Speed of sound v = f × λ",
+        "Echo: 2d = v × t, where d = distance, t = time for echo",
+        "Audible range: 20 Hz to 20 kHz",
+        "Ultrasound: > 20 kHz; Infrasonic: < 20 Hz",
+        "Loudness ∝ Amplitude²"
+      ]
+    },
+    "Current Electricity": {
+      "key_terms": [
+        "Current",
+        "Voltage",
+        "Resistance",
+        "Ohm's law",
+        "Resistivity",
+        "EMF",
+        "Terminal voltage",
+        "Internal resistance"
+      ],
+      "formulas": [
+        "Ohm's law: V = IR",
+        "Resistance R = ρl/A",
+        "Resistors in series: R = R₁ + R₂ + R₃",
+        "Resistors in parallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃",
+        "Electric Power P = VI = I²R = V²/R",
+        "Electrical Energy E = VIt = Pt"
+      ]
+    },
+    "Household Circuits": {
+      "key_terms": [
+        "Live wire",
+        "Neutral wire",
+        "Earth wire",
+        "Fuse",
+        "MCB",
+        "Earthing",
+        "Switch",
+        "kWh meter"
+      ],
+      "formulas": [
+        "Fuse rating should be slightly higher than normal current",
+        "kWh = Power(kW) × Time(hours)",
+        "All appliances connected in parallel",
+        "Colour code (old): Live-Red, Neutral-Black, Earth-Green",
+        "Colour code (new): Live-Brown, Neutral-Light Blue, Earth-Green/Yellow"
+      ]
+    },
+    "Calorimetry": {
+      "key_terms": [
+        "Heat",
+        "Temperature",
+        "Specific heat capacity",
+        "Heat capacity",
+        "Latent heat",
+        "Melting",
+        "Boiling"
+      ],
+      "formulas": [
+        "Q = mcΔT (Heat for temperature change)",
+        "Q = mL (Heat for phase change)",
+        "Heat capacity = mc",
+        "Heat lost = Heat gained (Principle of calorimetry)",
+        "m₁c₁ΔT₁ = m₂c₂ΔT₂"
+      ]
+    },
+    "Radioactivity": {
+      "key_terms": [
+        "Alpha particle",
+        "Beta particle",
+        "Gamma radiation",
+        "Half-life",
+        "Nuclear fission",
+        "Nuclear fusion",
+        "Isotopes"
+      ],
+      "formulas": [
+        "Alpha decay: A decreases by 4, Z decreases by 2",
+        "Beta decay: A unchanged, Z increases by 1",
+        "Gamma emission: No change in A or Z",
+        "Penetrating power: γ > β > α",
+        "Ionizing power: α > β > γ"
+      ]
+    }
+  },
+  "Chemistry": {
+    "Periodic Table": {
+      "key_terms": [
+        "Period",
+        "Group",
+        "Atomic number",
+        "Mass number",
+        "Electronegativity",
+        "Ionization energy",
+        "Electron affinity",
+        "Metallic character"
+      ],
+      "formulas": [
+        "Atomic number = Number of protons = Number of electrons (neutral atom)",
+        "Mass number = Protons + Neutrons",
+        "Down a group: Atomic size increases, Ionization energy decreases",
+        "Across a period: Atomic size decreases, Electronegativity increases",
+        "Group 1: Alkali metals; Group 17: Halogens; Group 18: Noble gases"
+      ]
+    },
+    "Chemical Bonding": {
+      "key_terms": [
+        "Ionic bond",
+        "Covalent bond",
+        "Electrovalent bond",
+        "Coordinate bond",
+        "Polar covalent",
+        "Octet rule",
+        "Lewis structure"
+      ],
+      "formulas": [
+        "Ionic: Metal + Non-metal (electron transfer)",
+        "Covalent: Non-metal + Non-metal (electron sharing)",
+        "Polarity: Greater ΔEN → More polar bond",
+        "Coordinate bond: One atom donates both electrons"
+      ]
+    },
+    "Acids, Bases and Salts": {
+      "key_terms": [
+        "Arrhenius theory",
+        "pH scale",
+        "Indicator",
+        "Neutralization",
+        "Salt hydrolysis",
+        "Water of crystallization"
+      ],
+      "formulas": [
+        "Acid + Base → Salt + Water",
+        "Acid + Metal → Salt + H₂↑",
+        "Acid + Carbonate → Salt + H₂O + CO₂↑",
+        "pH < 7: Acidic; pH = 7: Neutral; pH > 7: Basic",
+        "Strong acid: Complete dissociation; Weak acid: Partial dissociation"
+      ]
+    },
+    "Mole Concept": {
+      "key_terms": [
+        "Mole",
+        "Avogadro's number",
+        "Molar mass",
+        "Molar volume",
+        "Empirical formula",
+        "Molecular formula",
+        "Percentage composition"
+      ],
+      "formulas": [
+        "1 mole = 6.022 × 10²³ particles (Avogadro's number)",
+        "Number of moles = Given mass / Molar mass",
+        "Number of moles of gas = Volume at STP / 22.4 L",
+        "Molarity = Moles of solute / Volume of solution (L)",
+        "Vapour density = Molar mass / 2",
+        "% composition = (Mass of element / Molar mass) × 100"
+      ]
+    },
+    "Electrolysis": {
+      "key_terms": [
+        "Electrolyte",
+        "Electrode",
+        "Anode",
+        "Cathode",
+        "Cation",
+        "Anion",
+        "Electrochemical series"
+      ],
+      "formulas": [
+        "At cathode: Reduction (gain of electrons)",
+        "At anode: Oxidation (loss of electrons)",
+        "Electrochemical series determines discharge order",
+        "Faraday's First Law: m ∝ Q (mass ∝ charge)",
+        "Quantity of charge Q = I × t (coulombs)"
+      ]
+    },
+    "Organic Chemistry": {
+      "key_terms": [
+        "Alkane",
+        "Alkene",
+        "Alkyne",
+        "Functional group",
+        "Homologous series",
+        "Isomerism",
+        "Addition reaction",
+        "Substitution reaction"
+      ],
+      "formulas": [
+        "Alkanes: CₙH₂ₙ₊₂",
+        "Alkenes: CₙH₂ₙ",
+        "Alkynes: CₙH₂ₙ₋₂",
+        "Alcohol: R-OH; Aldehyde: R-CHO; Ketone: R-CO-R'",
+        "Carboxylic acid: R-COOH; Ester: R-COO-R'",
+        "Addition: Alkene + H₂ → Alkane (catalytic hydrogenation)"
+      ]
+    }
+  },
+  "Mathematics": {
+    "Quadratic Equations": {
+      "key_terms": [
+        "Roots",
+        "Discriminant",
+        "Factorisation",
+        "Completing square",
+        "Nature of roots"
+      ],
+      "formulas": [
+        "Standard form: ax² + bx + c = 0",
+        "Discriminant D = b² − 4ac",
+        "Roots: x = (−b ± √D) / 2a",
+        "D > 0: Real & distinct; D = 0: Real & equal; D < 0: No real roots",
+        "Sum of roots = −b/a; Product of roots = c/a"
+      ]
+    },
+    "Banking": {
+      "key_terms": [
+        "Recurring deposit",
+        "Maturity value",
+        "Interest",
+        "Qualifying sum"
+      ],
+      "formulas": [
+        "Maturity Value = (P × n) + I",
+        "Interest I = P × n(n+1)/(2×12) × r/100",
+        "where P = monthly deposit, n = number of months",
+        "Qualifying sum for 1 year = P × 12 × 13/24"
+      ]
+    },
+    "Shares and Dividends": {
+      "key_terms": [
+        "Face value",
+        "Market value",
+        "Dividend",
+        "Premium",
+        "Discount",
+        "Rate of return"
+      ],
+      "formulas": [
+        "Dividend = Face value × Dividend% / 100",
+        "Number of shares = Investment / Market value per share",
+        "Annual income = Number of shares × Dividend per share",
+        "Rate of return = (Annual income / Investment) × 100%"
+      ]
+    },
+    "Linear Inequations": {
+      "key_terms": [
+        "Solution set",
+        "Number line",
+        "Replacement set",
+        "Inequality"
+      ],
+      "formulas": [
+        "x > a means x is greater than a",
+        "Multiplying/dividing by negative number reverses inequality",
+        "Represent on number line: open circle ○ for < >, closed ● for ≤ ≥",
+        "Compound: a < x ≤ b (x between a and b)"
+      ]
+    },
+    "Matrices": {
+      "key_terms": [
+        "Order",
+        "Square matrix",
+        "Identity",
+        "Transpose",
+        "Scalar multiplication"
+      ],
+      "formulas": [
+        "Addition: [a b; c d] + [e f; g h] = [a+e b+f; c+g d+h]",
+        "Multiplication: [a b] × [c; d] = [ac+bd]",
+        "A × I = I × A = A",
+        "Transpose: Swap rows with columns (A^T)",
+        "Matrix A × B ≠ B × A (not commutative)"
+      ]
+    },
+    "Arithmetic Progression": {
+      "key_terms": [
+        "First term",
+        "Common difference",
+        "nth term",
+        "Sum of n terms"
+      ],
+      "formulas": [
+        "nth term: aₙ = a + (n−1)d",
+        "Sum of n terms: Sₙ = n/2[2a + (n−1)d] = n/2(a + l)",
+        "l = last term = a + (n−1)d",
+        "Middle term of odd AP = (n+1)/2 th term"
+      ]
+    },
+    "Similarity": {
+      "key_terms": [
+        "Similar triangles",
+        "Scale factor",
+        "Proportional sides",
+        "AAA",
+        "SAS",
+        "SSS similarity"
+      ],
+      "formulas": [
+        "If ΔABC ~ ΔPQR: AB/PQ = BC/QR = AC/PR",
+        "Area ratio = (Scale factor)²",
+        "AAA: Two angles equal → similar",
+        "SAS: Two sides proportional + included angle equal → similar"
+      ]
+    },
+    "Circles": {
+      "key_terms": [
+        "Chord",
+        "Tangent",
+        "Secant",
+        "Angle in semicircle",
+        "Cyclic quadrilateral"
+      ],
+      "formulas": [
+        "Angle in a semicircle = 90°",
+        "Tangent ⊥ Radius at point of contact",
+        "Tangent² = Secant × External secant segment",
+        "Opposite angles of cyclic quadrilateral sum to 180°",
+        "Equal chords: equidistant from centre, subtend equal angles"
+      ]
+    },
+    "Trigonometry": {
+      "key_terms": [
+        "sin",
+        "cos",
+        "tan",
+        "cosec",
+        "sec",
+        "cot",
+        "Angle of elevation",
+        "Angle of depression"
+      ],
+      "formulas": [
+        "sin²θ + cos²θ = 1",
+        "sec²θ − tan²θ = 1",
+        "cosec²θ − cot²θ = 1",
+        "sin(90°−θ) = cos θ; cos(90°−θ) = sin θ",
+        "tan θ = sin θ / cos θ",
+        "tan(90°−θ) = cot θ",
+        "Height = distance × tan(elevation angle)",
+        "Standard values: sin30°=1/2, sin45°=1/√2, sin60°=√3/2"
+      ]
+    },
+    "Mensuration": {
+      "key_terms": [
+        "Cylinder",
+        "Cone",
+        "Sphere",
+        "Hemisphere",
+        "Surface area",
+        "Volume",
+        "Curved surface area"
+      ],
+      "formulas": [
+        "Cylinder CSA = 2πrh, TSA = 2πr(r+h), Volume = πr²h",
+        "Cone CSA = πrl, TSA = πr(r+l), Volume = ⅓πr²h, l² = h² + r²",
+        "Sphere SA = 4πr², Volume = 4/3πr³",
+        "Hemisphere CSA = 2πr², TSA = 3πr², Volume = 2/3πr³",
+        "Frustum Volume = ⅓πh(R² + Rr + r²)"
+      ]
+    },
+    "Statistics": {
+      "key_terms": [
+        "Mean",
+        "Median",
+        "Mode",
+        "Ogive",
+        "Quartiles",
+        "Step deviation"
+      ],
+      "formulas": [
+        "Mean (direct) = Σx/n",
+        "Mean (assumed mean) = A + Σd/n",
+        "Mean (step deviation) = A + (Σu/n) × h",
+        "Median = l + [(n/2 − cf)/f] × h",
+        "Mode = l + [(f₁−f₀)/(2f₁−f₀−f₂)] × h"
+      ]
+    },
+    "Probability": {
+      "key_terms": [
+        "Sample space",
+        "Event",
+        "Favourable outcomes",
+        "Equally likely"
+      ],
+      "formulas": [
+        "P(E) = Number of favourable outcomes / Total outcomes",
+        "P(not E) = 1 − P(E)",
+        "0 ≤ P(E) ≤ 1",
+        "For sure event: P(E) = 1; For impossible: P(E) = 0",
+        "P(A or B) = P(A) + P(B) − P(A and B)"
+      ]
+    },
+    "Coordinate Geometry": {
+      "key_terms": [
+        "Slope",
+        "Distance formula",
+        "Section formula",
+        "Midpoint",
+        "Centroid",
+        "Equation of line"
+      ],
+      "formulas": [
+        "Distance PQ = √[(x₂−x₁)² + (y₂−y₁)²]",
+        "Midpoint M = ((x₁+x₂)/2, (y₁+y₂)/2)",
+        "Section formula (m:n): P = ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))",
+        "Slope m = (y₂−y₁)/(x₂−x₁)",
+        "Line equation: y = mx + c; y−y₁ = m(x−x₁)",
+        "Centroid G = ((x₁+x₂+x₃)/3, (y₁+y₂+y₃)/3)"
+      ]
+    },
+    "GST": {
+      "key_terms": [
+        "CGST",
+        "SGST",
+        "IGST",
+        "Input tax credit",
+        "Taxable value"
+      ],
+      "formulas": [
+        "GST = Taxable value × GST rate / 100",
+        "CGST = SGST = GST/2 (intra-state)",
+        "IGST = GST (inter-state)",
+        "Selling price = Marked price − Discount + GST"
+      ]
+    }
+  }
+}
