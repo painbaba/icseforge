@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
       sources: response.sources,
       cached: response.cached,
       durationMs: response.durationMs,
-      backend: response.backend
+      backend: response.backend,
+      webSearched: response.webSearched || false
     });
   } catch (err: any) {
     console.error('Chat error:', err);

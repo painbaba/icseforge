@@ -212,3 +212,30 @@ Stage Summary:
   Note: the existing TabsList uses `grid-cols-2 sm:grid-cols-4` — when adding the 5th tab, change to `grid-cols-2 sm:grid-cols-5` (or keep 4 + wrap).
 - Behavior verified against all three `/api/chat` endpoints (POST, DELETE, GET /status) and against every brief requirement (backend badge, 10 suggested questions, backend in footer, shadcn Alert+ScrollArea, Skeleton on initial load, force-reasoning switch, subject filter, markdown via prose-icse, collapsible reasoning, source tooltips).
 - No issues / no blockers.
+
+---
+Task ID: 10
+Agent: main
+Task: Smart dedup ingester + web search integration
+
+Work Log:
+- Built scripts/smart-ingest.ts — auto-parses JSON/TXT/MD/DOCX/CSV from /upload folder, deduplicates against existing KB (title prefix match + content fingerprint + 85% similarity threshold), ingests only new chunks
+- Supports 5 JSON patterns: past_papers, frequency_analysis, glossary, exam_guide, paper_index + fallback
+- Added --dry-run flag (scan only) and --file (specific file) options
+- Tested dry-run: 11 files → 131 chunks parsed → 115 skipped as dups → 17 new identified
+- Fixed normalizeSubject() to handle uppercase + "History & Civics" / "Computer Applications" / "English Language" variants
+- Added empty-file skipping (past_papers_empty, json_empty formats)
+- Created POST /api/ingest endpoint that runs the script and returns structured JSON report
+- Added Smart Ingest UI block to KnowledgeBaseTab.tsx with two buttons (Scan dry-run / Ingest new) + live report card showing per-file stats
+- Tested in browser: dry-run scan returned "Files scanned: 11, Chunks parsed: 131, Skipped (dups): 131, New ingested: 0, Total KB: 139" in 783ms
+- Integrated web search into src/lib/chat.ts: when question has web trigger keywords (latest/today/price of/news/etc.) AND no very-high-quality KB match (score > 25.0), calls zai.functions.invoke('web_search', {query, num:5}) and feeds results as additional context
+- Tuned web search threshold from 0.1 → 5.0 → 25.0 after testing (past papers with 50+ questions score ~20-25 from stopword matches alone)
+- Added webSearched boolean to ChatResponse, propagated through API + UI
+- Tested in browser: "What is the price of bitcoin in USD right now?" → returned real-time price ($62,730-$64,020) with sources (Revolut, CoinDesk, Yahoo Finance) in 3.7s
+- Cleaned up test scripts
+
+Stage Summary:
+- Smart ingester: drop files in /upload, click one button, only new chunks get added (no duplicates)
+- Web search: AI tutor can now access the internet for current-events questions (prices, news, latest info) when KB doesn't have a strong match
+- KB now at 139 chunks total (was 133). All ingestion is idempotent — re-running on same files = zero new chunks
+- User can keep collecting data and just click "Ingest new chunks" — system handles dedup automatically

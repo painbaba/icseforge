@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  BookOpenCheck, Layers, Database, Plus, Loader2, Info, Sparkles, Users,
+  BookOpenCheck, Layers, Database, Plus, Loader2, Info, Sparkles, Users, FolderSearch, Zap,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,8 @@ export function KnowledgeBaseTab({ refreshKey = 0 }: KnowledgeBaseTabProps) {
   const [stats, setStats] = useState<KnowledgeStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [ingesting, setIngesting] = useState(false);
+  const [ingestReport, setIngestReport] = useState<any>(null);
 
   // Form state
   const [subject, setSubject] = useState('');
@@ -89,6 +91,34 @@ export function KnowledgeBaseTab({ refreshKey = 0 }: KnowledgeBaseTabProps) {
       toast.error(err?.message || 'Could not add chunk');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleSmartIngest = async (dryRun: boolean = false) => {
+    setIngesting(true);
+    setIngestReport(null);
+    toast.info(dryRun ? 'Scanning uploads folder (dry run)...' : 'Scanning & ingesting uploads...');
+    try {
+      const res = await fetch('/api/ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dryRun }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Ingest failed');
+      setIngestReport(data);
+      const s = data.summary;
+      toast.success(
+        dryRun
+          ? `Scan complete: ${s.chunksIngested} new, ${s.chunksSkipped} duplicates would be skipped`
+          : `Ingested ${s.chunksIngested} new chunks (skipped ${s.chunksSkipped} duplicates)`,
+        { duration: 6000 }
+      );
+      if (!dryRun) loadStats();
+    } catch (err: any) {
+      toast.error(err?.message || 'Ingest failed');
+    } finally {
+      setIngesting(false);
     }
   };
 
@@ -162,6 +192,59 @@ export function KnowledgeBaseTab({ refreshKey = 0 }: KnowledgeBaseTabProps) {
                     </Badge>
                   ))}
                 </div>
+              </div>
+              <Separator />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <FolderSearch className="size-4 text-brand" />
+                  <p className="text-xs font-medium">Smart Ingest from /upload folder</p>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Drop JSON/TXT/MD/DOCX/CSV files in <code className="rounded bg-muted px-1">/home/z/my-project/upload/</code> then click below. Auto-deduplicates against existing KB — only new chunks are ingested.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleSmartIngest(true)}
+                    disabled={ingesting}
+                  >
+                    {ingesting ? <Loader2 className="size-3.5 animate-spin" /> : <FolderSearch className="size-3.5" />}
+                    Scan (dry run)
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleSmartIngest(false)}
+                    disabled={ingesting}
+                  >
+                    {ingesting ? <Loader2 className="size-3.5 animate-spin" /> : <Zap className="size-3.5" />}
+                    Ingest new chunks
+                  </Button>
+                </div>
+                {ingestReport && (
+                  <div className="rounded-md border bg-muted/40 p-2.5 text-xs">
+                    <div className="font-medium mb-1">Last run summary</div>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-muted-foreground">
+                      <span>Files scanned: <strong className="text-foreground">{ingestReport.summary.filesScanned}</strong></span>
+                      <span>Chunks parsed: <strong className="text-foreground">{ingestReport.summary.chunksParsed}</strong></span>
+                      <span>Skipped (dups): <strong className="text-foreground">{ingestReport.summary.chunksSkipped}</strong></span>
+                      <span>New ingested: <strong className="text-brand">{ingestReport.summary.chunksIngested}</strong></span>
+                      <span>Total KB: <strong className="text-foreground">{ingestReport.summary.totalChunks}</strong></span>
+                    </div>
+                    {ingestReport.report && ingestReport.report.length > 0 && (
+                      <details className="mt-2">
+                        <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Per-file report ({ingestReport.report.length} files)</summary>
+                        <ul className="mt-1 space-y-0.5">
+                          {ingestReport.report.map((r: any) => (
+                            <li key={r.file} className="text-muted-foreground">
+                              <strong className="text-foreground">{r.file}</strong> — {r.format}, {r.parsed} parsed, {r.ingested} new, {r.skipped} dups
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
+                )}
               </div>
             </>
           ) : (

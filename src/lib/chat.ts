@@ -32,6 +32,7 @@ export interface ChatResponse {
   cached: boolean;
   durationMs: number;
   backend: 'builtin' | 'openclaw' | 'demo';
+  webSearched?: boolean;
 }
 
 // ─── Subject auto-detection ────────────────────────────────
@@ -117,6 +118,43 @@ Answer with step-by-step reasoning where appropriate. Cite which ICSE topic/chap
   return { answer, reasoning: data.reasoning };
 }
 
+// ─── Web search fallback ───────────────────────────────────
+// When KB retrieval returns nothing relevant, search the web.
+async function searchWeb(query: string, num = 5): Promise<string> {
+  try {
+    const zai = await getZai();
+    const results: any = await zai.functions.invoke('web_search', { query, num });
+    if (!Array.isArray(results) || results.length === 0) return '';
+    return results.map((r: any, i: number) =>
+      `[${i + 1}] ${r.name}\nURL: ${r.url}\n${r.snippet || ''}\n`
+    ).join('\n');
+  } catch (e: any) {
+    console.error('Web search failed:', e.message);
+    return '';
+  }
+}
+
+// Detect if a question needs web search (current events, recent data, specific URLs, etc.)
+function needsWebSearch(question: string, kbChunks: RetrievedChunk[]): boolean {
+  const q = question.toLowerCase();
+  const webTriggers = [
+    'latest', 'recent', 'today', 'this year', 'this week', 'this month',
+    'current price', 'current value', 'current rate', 'current status',
+    'news', 'update', 'right now', 'currently', 'happening',
+    'website', 'url', 'http', 'www',
+    'who won', 'who is the current',
+    'price of', 'cost of', 'score of', 'result of',
+    'in 2024', 'in 2025', 'in 2026'
+  ];
+  const hasWebTrigger = webTriggers.some(t => q.includes(t));
+  if (!hasWebTrigger) return false;
+  // Only suppress web search if KB has VERY high quality match (score > 25.0)
+  // Past papers with 50+ questions can score ~20-25 from stopword matches alone,
+  // so 25 ensures we only suppress on genuinely strong topic matches.
+  const veryHighQuality = kbChunks.filter(c => c.score > 25.0);
+  return veryHighQuality.length === 0;
+}
+
 // ─── Main chat function ────────────────────────────────────
 export async function chatWithTutor(
   question: string,
@@ -133,11 +171,25 @@ export async function chatWithTutor(
     subject, topK: 6
   });
 
+  // 1b. If KB has nothing relevant AND question needs current info, search the web
+  let webResults = '';
+  let webSearched = false;
+  if (needsWebSearch(question, retrieved)) {
+    webResults = await searchWeb(question, 5);
+    webSearched = webResults.length > 0;
+  }
+
   const contextStr = retrieved.length > 0
     ? retrieved.map((c, i) =>
         `[${i + 1}] SUBJECT: ${c.subject} | CHAPTER: ${c.chapter} | CATEGORY: ${c.category}\nTITLE: ${c.title}\n${c.content.slice(0, 1500)}`
       ).join('\n\n---\n\n')
-    : '(No specific ICSE chunks matched — use general ICSE knowledge.)';
+    : (webResults
+      ? `(No ICSE knowledge chunks matched. WEB SEARCH RESULTS used as context — verify accuracy.)`
+      : '(No specific ICSE chunks matched — use general ICSE knowledge.)');
+
+  const fullContext = retrieved.length > 0
+    ? contextStr + (webResults ? `\n\n---\n\nADDITIONAL WEB SEARCH RESULTS (for current/external info):\n${webResults}` : '')
+    : (webResults ? webResults : contextStr);
 
   // 2. Check OpenClaw first (if configured)
   const openclawConfig = getOpenClawConfig();
@@ -146,7 +198,7 @@ export async function chatWithTutor(
       const wrappedQ = `STUDENT QUESTION: ${question}
 
 ICSE KNOWLEDGE CONTEXT (from database — use as ground truth):
-${contextStr}
+${fullContext}
 
 Answer with step-by-step reasoning where appropriate.`;
       const { answer, reasoning } = await callOpenClaw(wrappedQ, history, openclawConfig);
@@ -157,11 +209,11 @@ Answer with step-by-step reasoning where appropriate.`;
         })),
         cached: false,
         durationMs: Date.now() - startedAt,
-        backend: 'openclaw'
+        backend: 'openclaw',
+        webSearched
       };
     } catch (err: any) {
       console.error('OpenClaw failed, falling back to builtin:', err.message);
-      // fall through to builtin
     }
   }
 
@@ -173,6 +225,7 @@ Your capabilities:
 - Access to REAL past ICSE board questions (2021-2026) and high-scoring project exemplars
 - Step-by-step reasoning for numerical problems, derivations, and conceptual explanations
 - Exam-focused: always tie answers to mark allocation and board expectations
+${webSearched ? '- WEB SEARCH was used to fetch current information — cite URLs when using web results, and verify accuracy' : ''}
 
 When answering:
 1. ALWAYS ground your answer in the provided KNOWLEDGE CONTEXT. Reference which past papers or exemplars inform your answer.
@@ -183,13 +236,14 @@ When answering:
 6. If a topic is not in ICSE syllabus, politely redirect: "This topic is not in the ICSE Class 10 syllabus. The related ICSE topic is..."
 7. End answers with a "💡 Exam tip" line where relevant — practical advice on avoiding common mistakes or what examiners look for.
 8. Use simple, clear Indian-English. Define jargon before use.
+${webSearched ? '9. WEB SEARCH results were used — mention "According to web sources..." and include the URL when citing.' : ''}
 
 ${needsThink
   ? 'This question requires REASONING. Think step by step before giving the final answer. Show your reasoning process clearly.'
   : 'This is a recall/short-answer question. Answer concisely (under 80 words) but accurately.'}
 
 KNOWLEDGE CONTEXT (from ICSE database — use these as your source of truth):
-${contextStr}`;
+${fullContext}`;
 
   const recentHistory = history.slice(-6);
   const messages: { role: string; content: string }[] = [
@@ -248,7 +302,8 @@ ${contextStr}`;
       })),
       cached,
       durationMs: Date.now() - startedAt,
-      backend: 'builtin'
+      backend: 'builtin',
+      webSearched
     };
   } catch (err: any) {
     throw new Error(`Chat failed: ${err.message}`);
