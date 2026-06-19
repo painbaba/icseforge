@@ -263,3 +263,24 @@ Stage Summary:
 - 6.4 MB of real ICSE past paper content (2017-2026, all subjects)
 - ZERO data loss — every single line from all 512 PDFs is now in the KB and retrievable
 - AI tutor, project generator, and mock generator all benefit from the 17x richer knowledge base
+
+---
+Task ID: 12
+Agent: main
+Task: Enhance web search — smarter triggers + user toggle + visible badge
+
+Work Log:
+- Improved needsWebSearch() in src/lib/chat.ts: split triggers into "strong" (latest/today/price of/iphone/cricket score/etc.) and "off-syllabus" (price/movie/football/weather/phone/etc.)
+- Raised KB suppression threshold from 25 → 35 (past papers were scoring 20-30 from stopword matches alone, causing false "KB has answer" detections)
+- Added forceWebSearch option to chatWithTutor() — user can manually force web search regardless of triggers
+- Updated POST /api/chat to accept forceWebSearch in request body
+- Added "Web search" Switch toggle to TutorTab.tsx (next to existing "Force reasoning" toggle)
+- Updated ChatApiResponse + TutorMessage interfaces to include webSearched boolean
+- Added 🌐 "web search" badge (sky-blue, Globe icon) to message footer — appears when response used web search
+- Tested end-to-end with Agent Browser: "What is the price of iPhone 16 Pro in India?" + Web search ON → returned real price (₹64,900 for 128GB) with "web search · builtin" footer badge in 9.1s
+- Lint clean
+
+Stage Summary:
+- AI tutor now has TWO search modes: AUTO (smart triggers detect current-events/off-syllabus questions) and MANUAL (user toggles "Web search" on)
+- Every web-searched response shows a visible 🌐 badge so students know the answer came from the internet (not the ICSE KB)
+- KB-grounded ICSE questions still use RAG only (no wasted web calls) — threshold 35 ensures strong ICSE matches suppress web search

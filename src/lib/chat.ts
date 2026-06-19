@@ -137,29 +137,56 @@ async function searchWeb(query: string, num = 5): Promise<string> {
 // Detect if a question needs web search (current events, recent data, specific URLs, etc.)
 function needsWebSearch(question: string, kbChunks: RetrievedChunk[]): boolean {
   const q = question.toLowerCase();
-  const webTriggers = [
+
+  // Strong web-search triggers (always search if present, unless KB has very strong match)
+  const strongTriggers = [
     'latest', 'recent', 'today', 'this year', 'this week', 'this month',
+    'right now', 'currently', 'happening', 'news', 'update', 'updated',
     'current price', 'current value', 'current rate', 'current status',
-    'news', 'update', 'right now', 'currently', 'happening',
-    'website', 'url', 'http', 'www',
-    'who won', 'who is the current',
+    'current weather', 'current time', 'current date',
+    'who won', 'who is the current', 'who is winning',
     'price of', 'cost of', 'score of', 'result of',
-    'in 2024', 'in 2025', 'in 2026'
+    'in 2024', 'in 2025', 'in 2026', 'in 2027',
+    'breaking', 'live ', 'real-time', 'real time',
+    'website', 'url', 'http', 'www', '.com', '.org', '.in',
+    'stock', 'share price', 'market', 'cricket score',
+    'movie release', 'song release', 'game release',
+    'election result', 'exam result', 'result declared',
+    'iphone', 'samsung', 'oneplus', 'price in india', 'buy online'
   ];
-  const hasWebTrigger = webTriggers.some(t => q.includes(t));
-  if (!hasWebTrigger) return false;
-  // Only suppress web search if KB has VERY high quality match (score > 25.0)
-  // Past papers with 50+ questions can score ~20-25 from stopword matches alone,
-  // so 25 ensures we only suppress on genuinely strong topic matches.
-  const veryHighQuality = kbChunks.filter(c => c.score > 25.0);
-  return veryHighQuality.length === 0;
+
+  // Question-type triggers (questions asking ABOUT things not in ICSE syllabus)
+  const offSyllabusTriggers = [
+    'price', 'cost', 'buy', 'salary', 'income', 'revenue',
+    'net worth', 'market cap', 'stock market',
+    'movie', 'song', 'game', 'netflix', 'amazon', 'flipkart',
+    'football', 'cricket', 'ipl', 'world cup', 'olympics',
+    'weather', 'temperature', 'forecast',
+    'horoscope', 'zodiac',
+    'recipe', 'cook', 'restaurant',
+    'phone', 'laptop', 'gadget'
+  ];
+
+  const hasStrongTrigger = strongTriggers.some(t => q.includes(t));
+  const hasOffSyllabusTrigger = offSyllabusTriggers.some(t => q.includes(t));
+
+  if (!hasStrongTrigger && !hasOffSyllabusTrigger) return false;
+
+  // Only suppress web search if KB has an EXTREMELY high quality match (score > 35)
+  // Past papers score 20-30 from stopword matches alone, so 35 ensures we only
+  // suppress on genuinely strong topic matches (e.g. "Ohm's law physics" → 50+)
+  const veryHighQuality = kbChunks.filter(c => c.score > 35.0);
+  if (veryHighQuality.length > 0) return false;
+
+  // Search if strong trigger OR (off-syllabus trigger AND no good KB match)
+  return hasStrongTrigger || hasOffSyllabusTrigger;
 }
 
 // ─── Main chat function ────────────────────────────────────
 export async function chatWithTutor(
   question: string,
   history: ChatMessage[] = [],
-  opts: { forceReasoning?: boolean; subject?: string } = {}
+  opts: { forceReasoning?: boolean; forceWebSearch?: boolean; subject?: string } = {}
 ): Promise<ChatResponse> {
   const startedAt = Date.now();
 
@@ -171,10 +198,10 @@ export async function chatWithTutor(
     subject, topK: 6
   });
 
-  // 1b. If KB has nothing relevant AND question needs current info, search the web
+  // 1b. Web search: forced by user OR auto-triggered
   let webResults = '';
   let webSearched = false;
-  if (needsWebSearch(question, retrieved)) {
+  if (opts.forceWebSearch || needsWebSearch(question, retrieved)) {
     webResults = await searchWeb(question, 5);
     webSearched = webResults.length > 0;
   }

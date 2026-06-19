@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Brain, Send, Trash2, Sparkles, BookOpen, Lightbulb, ChevronDown,
-  Circle, Loader2, Zap, RotateCcw, BookMarked, AlertCircle,
+  Circle, Loader2, Zap, RotateCcw, BookMarked, AlertCircle, Globe,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,7 @@ interface TutorMessage {
   cached?: boolean;
   durationMs?: number;
   backend?: ChatBackend;
+  webSearched?: boolean;
 }
 
 interface ChatApiResponse {
@@ -56,6 +57,7 @@ interface ChatApiResponse {
   cached: boolean;
   durationMs: number;
   backend: ChatBackend;
+  webSearched?: boolean;
 }
 
 interface ChatStatusResponse {
@@ -106,6 +108,7 @@ export function TutorTab() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [subject, setSubject] = useState<string>('auto');
   const [forceReasoning, setForceReasoning] = useState(false);
+  const [forceWebSearch, setForceWebSearch] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -154,6 +157,7 @@ export function TutorTab() {
       const payload: Record<string, unknown> = {
         message: text,
         forceReasoning,
+        forceWebSearch,
       };
       if (currentSessionId) payload.sessionId = currentSessionId;
       if (subject && subject !== 'auto') payload.subject = subject;
@@ -169,7 +173,7 @@ export function TutorTab() {
       }
       return data as ChatApiResponse;
     },
-    [forceReasoning, subject],
+    [forceReasoning, forceWebSearch, subject],
   );
 
   // ── Append an assistant message from a ChatApiResponse ──────────────────
@@ -185,6 +189,7 @@ export function TutorTab() {
         cached: chatData.cached,
         durationMs: chatData.durationMs,
         backend: chatData.backend,
+        webSearched: chatData.webSearched,
       },
     ]);
   }, []);
@@ -410,22 +415,41 @@ export function TutorTab() {
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="force-reasoning"
-                    checked={forceReasoning}
-                    onCheckedChange={setForceReasoning}
-                    aria-label="Force chain-of-thought reasoning"
-                  />
-                  <Label
-                    htmlFor="force-reasoning"
-                    className="cursor-pointer select-none text-xs text-muted-foreground"
-                  >
-                    Force reasoning
-                  </Label>
-                  <span className="hidden text-[11px] text-muted-foreground/80 sm:inline">
-                    · always show 🧠 chain-of-thought
-                  </span>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="force-reasoning"
+                      checked={forceReasoning}
+                      onCheckedChange={setForceReasoning}
+                      aria-label="Force chain-of-thought reasoning"
+                    />
+                    <Label
+                      htmlFor="force-reasoning"
+                      className="cursor-pointer select-none text-xs text-muted-foreground"
+                    >
+                      Force reasoning
+                    </Label>
+                    <span className="hidden text-[11px] text-muted-foreground/80 sm:inline">
+                      · always show 🧠 chain-of-thought
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="force-web-search"
+                      checked={forceWebSearch}
+                      onCheckedChange={setForceWebSearch}
+                      aria-label="Force web search"
+                    />
+                    <Label
+                      htmlFor="force-web-search"
+                      className="cursor-pointer select-none text-xs text-muted-foreground"
+                    >
+                      Web search
+                    </Label>
+                    <span className="hidden text-[11px] text-muted-foreground/80 sm:inline">
+                      · 🔍 search internet for fresh info
+                    </span>
+                  </div>
                 </div>
                 <p className="font-mono text-[11px] text-muted-foreground">
                   {sessionId ? `session ${sessionId.slice(0, 8)}…` : 'new session'}
@@ -747,8 +771,8 @@ function AssistantMessageCard({ message }: { message: TutorMessage }) {
           </div>
         )}
 
-        {/* Footer: cached + duration + backend */}
-        {(message.cached || durationLabel || message.backend) && (
+        {/* Footer: cached + duration + backend + web search */}
+        {(message.cached || durationLabel || message.backend || message.webSearched) && (
           <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t pt-2 text-[11px] text-muted-foreground">
             {message.cached && (
               <span className="inline-flex items-center gap-1 text-brand">
@@ -762,9 +786,20 @@ function AssistantMessageCard({ message }: { message: TutorMessage }) {
                 {durationLabel}
               </span>
             )}
-            {message.backend && (
+            {message.webSearched && (
               <>
                 {(message.cached || durationLabel) && (
+                  <span aria-hidden className="text-muted-foreground/40">·</span>
+                )}
+                <span className="inline-flex items-center gap-1 font-medium text-sky-600 dark:text-sky-400">
+                  <Globe className="size-3" aria-hidden />
+                  <span>web search</span>
+                </span>
+              </>
+            )}
+            {message.backend && (
+              <>
+                {(message.cached || durationLabel || message.webSearched) && (
                   <span aria-hidden className="text-muted-foreground/40">·</span>
                 )}
                 <span
