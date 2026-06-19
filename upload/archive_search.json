@@ -1,0 +1,73 @@
+{
+  "physics_specimen": {
+    "query": "ICSE class 10 physics specimen paper",
+    "count": 0,
+    "items": []
+  },
+  "chemistry_specimen": {
+    "query": "ICSE class 10 chemistry specimen paper",
+    "count": 0,
+    "items": []
+  },
+  "maths_specimen": {
+    "query": "ICSE class 10 mathematics specimen paper",
+    "count": 0,
+    "items": []
+  },
+  "physics_practical": {
+    "query": "ICSE class 10 physics practical",
+    "count": 0,
+    "items": []
+  },
+  "chemistry_practical": {
+    "query": "ICSE class 10 chemistry practical",
+    "count": 1,
+    "items": [
+      {
+        "description": "TISS is a weekly podcast where Aadar, Neville, Kautuk and Varun discuss random, fun, stupid, pointless, weird, shocking \"facts\" they find on the internet. So come learn with them...or something like that. In the 91st episode, the boys share their favourite exam stories! Buy Tickets for Kautuk's show 'Working on The Vaccine' for June: https://bit.ly/3cT1xo9\u200b TISS Shorts is now LIVE. Subscribe, comment, like, share, enjoy previous episodes of the podcast. New episodes soon!: https://bit.ly/3tUdLTC Check out the TISS Sub-Reddit: https://bit.ly/2IEi0Qs\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b Check out the TISS Discord: https://discord.gg/UyDWVCpGUx\u200b\u200b\u200b\u200b\u200b\u200b Buy Varun Thakur's 420 Merch - http://bit.ly/2oDkhRV\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b Follow Us on Instagram. Varun - https://www.instagram.com/varunthakur... Aadar - https://www.instagram.com/theaadarguy... Neville - https://www.instagram.com/nevilleshah... Kautuk - https://www.instagram.com/cowtuk/\u200b\u200b\u200b\u200b...",
+        "identifier": "Emerson_Unitarian_Universalist_Church-93076e7f3120d732091da52dfd7be9bc",
+        "mediatype": "audio",
+        "title": "The Internet Said So | Ep 91 | Exams",
+        "year": 2021
+      }
+    ]
+  },
+  "physics_past": {
+    "query": "ICSE physics class 10 past paper",
+    "count": 0,
+    "items": []
+  },
+  "chemistry_past": {
+    "query": "ICSE chemistry class 10 past paper",
+    "count": 1,
+    "items": [
+      {
+        "description": "TISS is a weekly podcast where Aadar, Neville, Kautuk and Varun discuss random, fun, stupid, pointless, weird, shocking \"facts\" they find on the internet. So come learn with them...or something like that. In the 91st episode, the boys share their favourite exam stories! Buy Tickets for Kautuk's show 'Working on The Vaccine' for June: https://bit.ly/3cT1xo9\u200b TISS Shorts is now LIVE. Subscribe, comment, like, share, enjoy previous episodes of the podcast. New episodes soon!: https://bit.ly/3tUdLTC Check out the TISS Sub-Reddit: https://bit.ly/2IEi0Qs\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b Check out the TISS Discord: https://discord.gg/UyDWVCpGUx\u200b\u200b\u200b\u200b\u200b\u200b Buy Varun Thakur's 420 Merch - http://bit.ly/2oDkhRV\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b Follow Us on Instagram. Varun - https://www.instagram.com/varunthakur... Aadar - https://www.instagram.com/theaadarguy... Neville - https://www.instagram.com/nevilleshah... Kautuk - https://www.instagram.com/cowtuk/\u200b\u200b\u200b\u200b...",
+        "identifier": "Emerson_Unitarian_Universalist_Church-93076e7f3120d732091da52dfd7be9bc",
+        "mediatype": "audio",
+        "title": "The Internet Said So | Ep 91 | Exams",
+        "year": 2021
+      }
+    ]
+  },
+  "maths_past": {
+    "query": "ICSE mathematics class 10 past paper",
+    "count": 0,
+    "items": []
+  },
+  "physics_marking": {
+    "query": "ICSE physics marking scheme class 10",
+    "count": 0,
+    "items": []
+  },
+  "chemistry_marking": {
+    "query": "ICSE chemistry marking scheme class 10",
+    "count": 0,
+    "items": []
+  },
+  "maths_marking": {
+    "query": "ICSE mathematics marking scheme class 10",
+    "count": 0,
+    "items": []
+  }
+}

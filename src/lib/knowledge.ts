@@ -16,12 +16,15 @@ export interface RetrievedChunk {
   score: number; // 0-1, higher = more relevant
 }
 
-// In-memory index of ALL knowledge (seed + user-added). Built once.
+// In-memory index of ALL knowledge (seed + user-added). Built once, refreshed when DB changes.
 let memoryIndex: RetrievedChunk[] | null = null;
-let lastLoadCount = 0;
+let lastDbCount = -1;
 
 async function loadIndex(): Promise<RetrievedChunk[]> {
-  if (memoryIndex && memoryIndex.length === lastLoadCount) return memoryIndex;
+  // Always check DB count — if new chunks were added (by this process or another),
+  // rebuild the index. This is a cheap COUNT(*) query.
+  const dbCount = await db.knowledgeChunk.count();
+  if (memoryIndex && dbCount === lastDbCount) return memoryIndex;
 
   const fromDb = await db.knowledgeChunk.findMany({
     select: {
@@ -43,13 +46,14 @@ async function loadIndex(): Promise<RetrievedChunk[]> {
   }));
 
   memoryIndex = [...seedMapped, ...dbMapped];
-  lastLoadCount = memoryIndex.length;
+  lastDbCount = dbCount;
   return memoryIndex;
 }
 
 // Allow forcing reload after new user uploads
 export async function reloadKnowledgeBase(): Promise<void> {
   memoryIndex = null;
+  lastDbCount = -1;
   await loadIndex();
 }
 

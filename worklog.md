@@ -90,3 +90,32 @@ Stage Summary:
   • Cache layer (in-memory LRU + DB) dedupes LLM/image calls — repeat queries near-free
   • Responsive, accessible, sticky footer, emerald/amber scholarly palette
 - The tool is now ready for the user to start contributing ICSE specimen data via the Knowledge Base tab
+
+---
+Task ID: 9
+Agent: main
+Task: Ingest user-collected ICSE data (7 uploaded files)
+
+Work Log:
+- Inspected all 7 uploaded files:
+  - icse_class10_all_papers.json → EMPTY (0 papers, schema only)
+  - index.json → EMPTY (just `{}`)
+  - archive_search.json → mostly empty (Internet Archive search found 0 relevant items, 2 irrelevant podcast hits)
+  - icse_kb.db → well-designed schema (subjects/syllabus/papers/questions/marking_schemes/sample_answers/yt_videos) but ONLY yt_videos table populated (78 rows); all substantive tables empty
+  - youtube_curated.json → real data: validated reference videos + curated search queries for physics/chemistry/maths
+  - yt_catalog.json → real data: 87 YouTube videos across physics/chemistry/maths with titles, channels, view counts, descriptions, tags
+  - ICSE_Class10_Project_Exemplars.docx → GOLD: 1612 lines, 10 complete ICSE project exemplars (Physics x2, Chemistry x2, Biology x2, Maths x2, Computer x2) each with Aim/Apparatus/Theory/Procedure/Observations/Conclusion/Precautions
+- Extracted DOCX via pandoc → /tmp/exemplars.txt
+- Wrote ingestion script: scripts/ingest-collected-data.ts (parses exemplars by subject headers, summarizes YT catalog per subject, adds curated queries)
+- Ran ingestion: 14 new KB chunks added (10 exemplars + 3 YT summaries + 1 curated queries)
+- Fixed staleness bug in src/lib/knowledge.ts: in-memory index now checks DB count on every call (was only built once per process, so dev server didn't see new chunks added by ingestion script)
+- Verified via API: KB grew from 22 → 36 chunks, all 5 subjects have real exemplars
+- Verified retrieval: "Computer Java Fibonacci" → finds Computer Project Exemplar 1 (Fibonacci) as #1 hit; "Biology photosynthesis" → finds Biology Project Exemplar 1 (Photosynthesis) as #3
+- Verified UI: stat chips now show "36 KB chunks"
+- Cleaned up: removed test_retrieve.ts temp file
+
+Stage Summary:
+- User's data successfully ingested. KB now has 10 real ICSE project exemplars (not just format templates) + 87 topper video references + curated topic discovery queries.
+- The 7-agent pipeline will now retrieve ACTUAL high-scoring exemplar content when generating projects, not just format guidance.
+- 3 of the 7 uploaded files were empty (data collection scripts ran but found nothing) — user may want to re-run those scrapers with different sources.
+- Ingestion script is reusable: user can drop more files in /upload/ and re-run `bun run scripts/ingest-collected-data.ts` after editing the script.
