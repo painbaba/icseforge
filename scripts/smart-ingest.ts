@@ -95,6 +95,46 @@ async function parseJsonFile(filePath: string): Promise<{ chunks: ParsedChunk[];
   const data = JSON.parse(raw);
   const chunks: ParsedChunk[] = [];
 
+  // Pattern 0: PDF-extracted content array [{file_name, year, subject, content: [{page, text}]}]
+  // (the icse_kb_*.json files from user's laptop PDF extraction)
+  if (Array.isArray(data) && data.length > 0 && data[0]?.file_name && data[0]?.content) {
+    for (const paper of data) {
+      const subject = normalizeSubject(paper.subject || 'Unknown');
+      const year = String(paper.year || 'unknown');
+      const paperType = paper.type || 'PYQ';
+      const fileName = paper.file_name || '';
+
+      // Concatenate all page texts
+      const pageTexts = (paper.content || []).map((p: any) => {
+        if (typeof p === 'string') return p;
+        if (p?.text) return `--- Page ${p.page || '?'} ---\n${p.text}`;
+        return '';
+      }).filter((t: string) => t.trim().length > 20);
+
+      if (pageTexts.length === 0) continue;
+      const fullText = pageTexts.join('\n\n');
+      if (fullText.trim().length < 100) continue; // skip near-empty
+
+      // Truncate to 8000 chars per paper (RAG chunk size limit)
+      const truncated = fullText.slice(0, 8000);
+
+      chunks.push({
+        subject,
+        className: '10',
+        category: 'past_paper',
+        chapter: year,
+        title: `${subject} ${year} ${paperType} — ICSE Class 10 (${paper.pages || '?'} pages, ${paper.chars || truncated.length} chars)`,
+        content: `ICSE Class 10 ${subject} — ${paperType} Paper from ${year}
+Source file: ${fileName}
+
+${truncated}`,
+        tags: `${subject.toLowerCase()},past,paper,${year},${paperType.toLowerCase()},icse,class10,pdf-extracted`,
+        source: 'user_upload'
+      });
+    }
+    return { chunks, format: 'pdf_extracted' };
+  }
+
   // Pattern 1: { meta, papers: [...] } — past papers format
   if (data.papers && Array.isArray(data.papers)) {
     if (data.papers.length === 0) {
@@ -205,6 +245,7 @@ function normalizeSubject(s: string): string {
   const map: Record<string, string> = {
     'History & Civics': 'History',
     'Computer Applications': 'Computer',
+    'Computer Science': 'Computer',
     'English Language': 'English',
     'English Literature': 'English',
     'COMPUTER SCIENCE': 'Computer',
@@ -216,7 +257,11 @@ function normalizeSubject(s: string): string {
     'GEOGRAPHY': 'Geography',
     'ENGLISH': 'English',
     'ECONOMICS': 'Economics',
-    'CIVICS': 'History'
+    'CIVICS': 'History',
+    'HINDI': 'Hindi',
+    'COMMERCIAL STUDIES': 'Commercial Studies',
+    'ENVIRONMENTAL SCIENCE': 'Environmental Science',
+    'PHYSICAL EDUCATION': 'Physical Education'
   };
   return map[s] || map[s.toUpperCase()] || s;
 }
