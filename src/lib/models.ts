@@ -20,8 +20,9 @@ import OpenAI from 'openai';
 // ─── Model definitions ─────────────────────────────────────
 
 export type ModelId = 'auto' | 'glm' | 'openai' | 'deepseek' | 'grok' |
-  'openrouter' | 'groq' | 'gemini' | 'claude' | 'perplexity' | 'mistral' |
-  'github';
+  'openrouter' | 'groq' | 'gemini' | 'gemini_pro' | 'gemini_2_flash' |
+  'gemini_2_pro' | 'gemini_2_5_flash' | 'gemini_2_5_pro' | 'claude' |
+  'perplexity' | 'mistral' | 'github';
 
 export interface ModelInfo {
   id: ModelId;
@@ -163,6 +164,81 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     free_tier: true,
     signup_url: 'https://aistudio.google.com/app/apikey'
   },
+  gemini_pro: {
+    id: 'gemini_pro',
+    name: 'Gemini 1.5 Pro',
+    provider: 'Google',
+    description: 'Pro tier, superior reasoning, multimodal, 2M context',
+    capabilities: ['Reasoning', 'Complex Math', 'Code', 'Multimodal', '2M Context'],
+    best_for: ['Complex academic questions', 'High-accuracy code generation', 'Advanced science numericals'],
+    cost_per_1k_tokens: 0.00125,
+    avg_latency_ms: 3500,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'Pro quality with 2M token context window. Superior reasoning and complex instruction following.',
+    free_tier: false
+  },
+  gemini_2_flash: {
+    id: 'gemini_2_flash',
+    name: 'Gemini 2.0 Flash',
+    provider: 'Google',
+    description: 'Next-gen Flash model, ultra-fast response, multimodal',
+    capabilities: ['Ultra-fast', 'Multimodal', 'Reasoning', 'Long Context'],
+    best_for: ['Quick chat', 'Exemplar explanations', 'Snappy RAG queries'],
+    cost_per_1k_tokens: 0.00015,
+    avg_latency_ms: 1200,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'Next-generation Gemini 2.0 speed and accuracy. Snappier response with enhanced reasoning.',
+    free_tier: true
+  },
+  gemini_2_pro: {
+    id: 'gemini_2_pro',
+    name: 'Gemini 2.0 Pro',
+    provider: 'Google',
+    description: 'Next-gen Pro model, highest reasoning quality, complex coding',
+    capabilities: ['Deep reasoning', 'Complex coding', 'Math', 'Multimodal'],
+    best_for: ['Very complex computer programming', 'Advanced mathematics', 'Research analysis'],
+    cost_per_1k_tokens: 0.0015,
+    avg_latency_ms: 4000,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'Our strongest Google Gemini model. Industry-leading reasoning and multi-turn coding performance.',
+    free_tier: false
+  },
+  gemini_2_5_flash: {
+    id: 'gemini_2_5_flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'Google',
+    description: 'Latest 2.5 Flash model, enhanced reasoning, high speed',
+    capabilities: ['High speed', 'Advanced reasoning', 'Multimodal'],
+    best_for: ['General tutoring', 'Fast explanations', 'Interactive code debugging'],
+    cost_per_1k_tokens: 0.0001,
+    avg_latency_ms: 1100,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'Latest Gemini 2.5 architecture, providing the best blend of speed, cost, and high intelligence.',
+    free_tier: true
+  },
+  gemini_2_5_pro: {
+    id: 'gemini_2_5_pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'Google',
+    description: 'Latest 2.5 Pro model, ultimate reasoning and code complexity',
+    capabilities: ['Ultimate reasoning', 'Expert coding', 'Expert math', 'Multimodal'],
+    best_for: ['Ultimate-tier academic support', 'Expert Java Applications', 'Complex logic puzzles'],
+    cost_per_1k_tokens: 0.001,
+    avg_latency_ms: 3800,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'State-of-the-art Gemini 2.5 Pro model. Designed for the most complex coding and logical reasoning tasks.',
+    free_tier: false
+  },
   claude: {
     id: 'claude',
     name: 'Claude 3.5 Sonnet',
@@ -258,6 +334,11 @@ function getClient(provider: string): OpenAI {
       client = new OpenAI({ apiKey: process.env.GROQ_API_KEY, baseURL: 'https://api.groq.com/openai/v1' });
       break;
     case 'gemini':
+    case 'gemini_pro':
+    case 'gemini_2_flash':
+    case 'gemini_2_pro':
+    case 'gemini_2_5_flash':
+    case 'gemini_2_5_pro':
       client = new OpenAI({
         apiKey: process.env.GEMINI_API_KEY,
         baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
@@ -292,6 +373,11 @@ const MODEL_NAMES: Record<string, string> = {
   openrouter: 'anthropic/claude-3.5-sonnet', // default model via OpenRouter
   groq: 'llama-3.3-70b-versatile',
   gemini: 'gemini-1.5-flash',
+  gemini_pro: 'gemini-1.5-pro',
+  gemini_2_flash: 'gemini-2.0-flash',
+  gemini_2_pro: 'gemini-2.0-pro-exp',
+  gemini_2_5_flash: 'gemini-2.5-flash',
+  gemini_2_5_pro: 'gemini-2.5-pro',
   claude: 'claude-3-5-sonnet-20241022',
   perplexity: 'llama-3.1-sonar-large-128k-online',
   mistral: 'mistral-large-latest'
@@ -337,6 +423,7 @@ export function pickAutoModel(question: string, opts: { webNeeded?: boolean; nee
 
   // 5. Complex multi-step reasoning → GPT-4o or DeepSeek
   if (opts.needsReasoning) {
+    if (MODELS.gemini_2_5_pro.available) return 'gemini_2_5_pro';
     if (MODELS.openai.available) return 'openai';
     if (MODELS.deepseek.available) return 'deepseek';
     if (MODELS.groq.available) return 'groq';
@@ -458,16 +545,21 @@ export interface RouterResult extends ModelCallResult {
 
 // Fallback priority: cheapest + most reliable first
 const FALLBACK_ORDER: ModelId[] = [
-  'glm',        // always available, cheapest
-  'groq',       // free tier, ultra-fast
-  'deepseek',   // cheap, best reasoning
-  'openrouter', // multi-model
-  'openai',     // expensive but powerful
-  'grok',       // web access
-  'gemini',     // free tier
-  'claude',     // best writing
-  'perplexity', // cited web search
-  'mistral'     // code
+  'glm',              // always available, cheapest
+  'gemini_2_5_flash', // latest free tier flash
+  'gemini_2_flash',   // 2.0 free tier flash
+  'gemini',           // 1.5 free tier flash
+  'groq',             // free tier, ultra-fast
+  'deepseek',         // cheap, best reasoning
+  'openrouter',       // multi-model
+  'openai',           // expensive but powerful
+  'grok',             // web access
+  'gemini_2_5_pro',
+  'gemini_2_pro',
+  'gemini_pro',
+  'claude',           // best writing
+  'perplexity',       // cited web search
+  'mistral'           // code
 ];
 
 export async function callModel(opts: RouterOptions): Promise<RouterResult> {
