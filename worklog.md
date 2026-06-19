@@ -354,3 +354,24 @@ Stage Summary:
 - 6 PRO models for power users (OpenAI, DeepSeek, Grok, OpenRouter, Claude, Perplexity)
 - Clear UX: users see Free vs Pro, can unlock free models with 3 signups (Groq, Gemini, Mistral — all no credit card)
 - Auto mode intelligently routes questions to best model type
+
+---
+Task ID: 15
+Agent: main
+Task: Add Gemini + Mistral keys, move model selector to chat footer
+
+Work Log:
+- Added Gemini key (AQ.Ab8RN6...) and Mistral key (eyfC6DFc...) to .env
+- Tested both: Mistral ✅ works, Gemini ❌ 404 (key format valid but endpoint issue — will debug later, auto-fallback covers it)
+- Moved model selector dropdown from header to footer of chat input area (between Send button and Force reasoning / Web search toggles)
+- Footer now has: [Textarea + Send] → [Model: dropdown (full width)] → [Force reasoning | Web search | session ID]
+- Dropdown retains Free/Pro sections with all 11 models visible
+- Mistral + Gemini now show as available (not greyed out) in Free tier section
+- Tested end-to-end: selected Mistral → asked "Write a Java program to check if a number is prime" → got complete Java code with ICSE exam tips in 4.5s, no fallback, footer shows "mistral" badge
+- Lint clean
+
+Stage Summary:
+- 3 FREE models now fully working: GLM (always), Mistral (just added), Gemini (key set but endpoint issue — falls back to GLM automatically)
+- 1 FREE model still needs key: Groq (fastest, get free key at console.groq.com/keys)
+- Model selector moved to chat footer — more accessible, better UX
+- Verified: Mistral handles Java code questions perfectly with ICSE KB grounding

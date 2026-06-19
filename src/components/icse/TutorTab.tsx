@@ -331,103 +331,6 @@ export function TutorTab() {
 
               <div className="flex shrink-0 flex-wrap items-center gap-2">
                 <BackendStatusBadge status={status} loading={statusLoading} />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Select value={preferredModel} onValueChange={setPreferredModel}>
-                      <SelectTrigger
-                        id="tutor-model"
-                        className="h-9 w-[130px]"
-                        aria-label="AI model selector"
-                      >
-                        <SelectValue placeholder="Model" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {/* Auto (always first) */}
-                        <SelectItem value="auto">
-                          <div className="flex flex-col">
-                            <span className="font-medium">⚡ Auto (Smart Pick)</span>
-                            <span className="text-[10px] text-muted-foreground">System picks best model per question</span>
-                          </div>
-                        </SelectItem>
-
-                        {/* FREE tier models (excluding GLM which has its own block) — show all, greyed if no key */}
-                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
-                          🆓 Free tier
-                        </div>
-                        {(modelsData?.models || [])
-                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && m.free_tier)
-                          .map((m) => (
-                            <SelectItem
-                              key={m.id}
-                              value={m.id}
-                              disabled={!m.available}
-                              className={!m.available ? 'opacity-50' : ''}
-                            >
-                              <div className="flex flex-col">
-                                <span className="font-medium">
-                                  {m.name} <span className="text-[10px] text-emerald-600">🆓</span>
-                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground">{m.provider} · {m.description.slice(0, 45)}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-
-                        {/* GLM (always free, separate) */}
-                        <SelectItem value="glm">
-                          <div className="flex flex-col">
-                            <span className="font-medium">GLM-4.6 <span className="text-[10px] text-emerald-600">🆓</span></span>
-                            <span className="text-[10px] text-muted-foreground">Z.ai · always available, default fallback</span>
-                          </div>
-                        </SelectItem>
-
-                        {/* PRO models (paid) */}
-                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
-                          💎 Pro (paid API key required)
-                        </div>
-                        {(modelsData?.models || [])
-                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && !m.free_tier)
-                          .map((m) => (
-                            <SelectItem
-                              key={m.id}
-                              value={m.id}
-                              disabled={!m.available}
-                              className={!m.available ? 'opacity-50' : ''}
-                            >
-                              <div className="flex flex-col">
-                                <span className="font-medium">
-                                  {m.name}
-                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground">
-                                  {m.provider} · ${m.cost_per_1k_tokens}/1K tokens
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    {(() => {
-                      const m = modelsData?.models?.find((x: any) => x.id === preferredModel);
-                      return m ? (
-                        <div className="space-y-1">
-                          <p className="font-medium">{m.name} ({m.provider})</p>
-                          <p className="text-xs">{m.description}</p>
-                          <p className="text-xs"><strong>Best for:</strong> {m.best_for.join(', ')}</p>
-                          <p className="text-xs"><strong>Why better:</strong> {m.why_better}</p>
-                          <p className="text-xs"><strong>Cost:</strong> ${m.cost_per_1k_tokens}/1K tokens · <strong>Latency:</strong> ~{m.avg_latency_ms}ms{m.free_tier ? ' · 🆓 Free tier' : ''}</p>
-                          {!m.available && m.signup_url && (
-                            <p className="text-xs text-amber-600 dark:text-amber-400">
-                              <strong>Get free key:</strong> {m.signup_url}
-                            </p>
-                          )}
-                        </div>
-                      ) : 'Select a model';
-                    })()}
-                  </TooltipContent>
-                </Tooltip>
                 <Select value={subject} onValueChange={setSubject}>
                   <SelectTrigger
                     id="tutor-subject"
@@ -533,6 +436,107 @@ export function TutorTab() {
                   )}
                   <span className="hidden sm:inline">Send</span>
                 </Button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 border-t pt-3">
+                <span className="text-xs font-medium text-muted-foreground">Model:</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Select value={preferredModel} onValueChange={setPreferredModel}>
+                      <SelectTrigger
+                        id="tutor-model"
+                        className="h-8 min-w-[200px] max-w-full flex-1"
+                        aria-label="AI model selector"
+                      >
+                        <SelectValue placeholder="Select model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {/* Auto (always first) */}
+                        <SelectItem value="auto">
+                          <div className="flex flex-col">
+                            <span className="font-medium">⚡ Auto (Smart Pick)</span>
+                            <span className="text-[10px] text-muted-foreground">System picks best model per question</span>
+                          </div>
+                        </SelectItem>
+
+                        {/* FREE tier models */}
+                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
+                          🆓 Free tier
+                        </div>
+                        {(modelsData?.models || [])
+                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && m.free_tier)
+                          .map((m) => (
+                            <SelectItem
+                              key={m.id}
+                              value={m.id}
+                              disabled={!m.available}
+                              className={!m.available ? 'opacity-50' : ''}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {m.name} <span className="text-[10px] text-emerald-600">🆓</span>
+                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground">{m.provider} · {m.description.slice(0, 45)}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+
+                        {/* GLM (always free) */}
+                        <SelectItem value="glm">
+                          <div className="flex flex-col">
+                            <span className="font-medium">GLM-4.6 <span className="text-[10px] text-emerald-600">🆓</span></span>
+                            <span className="text-[10px] text-muted-foreground">Z.ai · always available, default fallback</span>
+                          </div>
+                        </SelectItem>
+
+                        {/* PRO models (paid) */}
+                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+                          💎 Pro (paid API key required)
+                        </div>
+                        {(modelsData?.models || [])
+                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && !m.free_tier)
+                          .map((m) => (
+                            <SelectItem
+                              key={m.id}
+                              value={m.id}
+                              disabled={!m.available}
+                              className={!m.available ? 'opacity-50' : ''}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {m.name}
+                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground">
+                                  {m.provider} · ${m.cost_per_1k_tokens}/1K tokens
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs" side="top">
+                    {(() => {
+                      const m = modelsData?.models?.find((x: any) => x.id === preferredModel);
+                      return m ? (
+                        <div className="space-y-1">
+                          <p className="font-medium">{m.name} ({m.provider})</p>
+                          <p className="text-xs">{m.description}</p>
+                          <p className="text-xs"><strong>Best for:</strong> {m.best_for.join(', ')}</p>
+                          <p className="text-xs"><strong>Why better:</strong> {m.why_better}</p>
+                          <p className="text-xs"><strong>Cost:</strong> ${m.cost_per_1k_tokens}/1K tokens · <strong>Latency:</strong> ~{m.avg_latency_ms}ms{m.free_tier ? ' · 🆓 Free tier' : ''}</p>
+                          {!m.available && m.signup_url && (
+                            <p className="text-xs text-amber-600 dark:text-amber-400">
+                              <strong>Get free key:</strong> {m.signup_url}
+                            </p>
+                          )}
+                        </div>
+                      ) : 'Select a model';
+                    })()}
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3">
