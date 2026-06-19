@@ -66,7 +66,8 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     reasoning: true,
     web_search_native: false,
     available: true,
-    why_better: 'Best price/performance for ICSE tutoring. Native Indian-English understanding. Built-in thinking mode. Always available.'
+    why_better: 'Best price/performance for ICSE tutoring. Native Indian-English understanding. Built-in thinking mode. Always available.',
+    free_tier: true
   },
   openai: {
     id: 'openai',

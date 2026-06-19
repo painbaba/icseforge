@@ -324,3 +324,33 @@ Stage Summary:
 - User can see which model answered each question via the 🧠 badge in the footer
 - ⚠ fallback indicator shows when primary model failed
 - NOTE: 3 of 4 external API keys have issues (DeepSeek no balance, OpenAI region blocked, Grok invalid key) — user needs to fix these on their provider dashboards. GLM-4.6 always works as the reliable fallback.
+
+---
+Task ID: 14
+Agent: main
+Task: Expand to 10 AI providers + Free/Pro dropdown sections
+
+Work Log:
+- Verified free-tier status of each provider (Groq, Gemini, Mistral = free; OpenAI, DeepSeek, Claude, Perplexity, Grok = paid)
+- Added 6 new providers to src/lib/models.ts: OpenRouter (200+ models via 1 key), Groq (free, 500 tok/sec Llama 3.3), Gemini (free, multimodal, 1M context), Claude (best writing), Perplexity (cited web search), Mistral (EU, code-focused, free tier)
+- All use OpenAI SDK with different baseURLs — zero new dependencies
+- Updated pickAutoModel() routing: math→DeepSeek, code→GPT-4o/Mistral, web→Grok/Perplexity, writing→Claude, default→GLM
+- Updated FALLBACK_ORDER: cheapest+most-reliable first (glm→groq→deepseek→openrouter→openai→grok→gemini→claude→perplexity→mistral)
+- Marked GLM as free_tier: true (always free with sandbox)
+- Added free_tier + signup_url fields to ModelInfo for UI display
+- Redesigned model dropdown in TutorTab.tsx with 3 sections:
+  • ⚡ Auto (always first)
+  • 🆓 Free tier (Groq, Gemini, Mistral, GLM — greyed out if no key, with "add key" hint)
+  • 💎 Pro (GPT-4o, DeepSeek, Grok, OpenRouter, Claude, Perplexity — show price per 1K tokens)
+- Unavailable free-tier models now shown greyed out (instead of hidden) so users see what they can unlock
+- Updated tooltip to show "🆓 Free tier" badge + signup URL for unavailable models
+- Added env slots in .env for all 6 new providers (OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, PERPLEXITY_API_KEY, MISTRAL_API_KEY)
+- Lint clean, verified dropdown shows all 11 options in browser
+
+Stage Summary:
+- Total providers: 10 (was 4) — biggest diversification possible
+- 5 models available now (auto + glm + 3 paid keys set but 2 have issues)
+- 4 FREE tier models ready to unlock (Groq, Gemini, Mistral need keys; GLM always free)
+- 6 PRO models for power users (OpenAI, DeepSeek, Grok, OpenRouter, Claude, Perplexity)
+- Clear UX: users see Free vs Pro, can unlock free models with 3 signups (Groq, Gemini, Mistral — all no credit card)
+- Auto mode intelligently routes questions to best model type

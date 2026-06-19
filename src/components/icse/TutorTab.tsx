@@ -342,23 +342,69 @@ export function TutorTab() {
                         <SelectValue placeholder="Model" />
                       </SelectTrigger>
                       <SelectContent>
-                        {(modelsData?.models || []).map((m) => (
-                          <SelectItem
-                            key={m.id}
-                            value={m.id}
-                            disabled={!m.available}
-                            className={!m.available ? 'opacity-50' : ''}
-                          >
-                            <div className="flex flex-col">
-                              <span className="font-medium">
-                                {m.name}
-                                {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
-                                {m.available && m.free_tier && <span className="ml-1 text-[10px] text-emerald-600">🆓</span>}
-                              </span>
-                              <span className="text-[10px] text-muted-foreground">{m.provider}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
+                        {/* Auto (always first) */}
+                        <SelectItem value="auto">
+                          <div className="flex flex-col">
+                            <span className="font-medium">⚡ Auto (Smart Pick)</span>
+                            <span className="text-[10px] text-muted-foreground">System picks best model per question</span>
+                          </div>
+                        </SelectItem>
+
+                        {/* FREE tier models (excluding GLM which has its own block) — show all, greyed if no key */}
+                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
+                          🆓 Free tier
+                        </div>
+                        {(modelsData?.models || [])
+                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && m.free_tier)
+                          .map((m) => (
+                            <SelectItem
+                              key={m.id}
+                              value={m.id}
+                              disabled={!m.available}
+                              className={!m.available ? 'opacity-50' : ''}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {m.name} <span className="text-[10px] text-emerald-600">🆓</span>
+                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground">{m.provider} · {m.description.slice(0, 45)}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+
+                        {/* GLM (always free, separate) */}
+                        <SelectItem value="glm">
+                          <div className="flex flex-col">
+                            <span className="font-medium">GLM-4.6 <span className="text-[10px] text-emerald-600">🆓</span></span>
+                            <span className="text-[10px] text-muted-foreground">Z.ai · always available, default fallback</span>
+                          </div>
+                        </SelectItem>
+
+                        {/* PRO models (paid) */}
+                        <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+                          💎 Pro (paid API key required)
+                        </div>
+                        {(modelsData?.models || [])
+                          .filter(m => m.id !== 'auto' && m.id !== 'glm' && !m.free_tier)
+                          .map((m) => (
+                            <SelectItem
+                              key={m.id}
+                              value={m.id}
+                              disabled={!m.available}
+                              className={!m.available ? 'opacity-50' : ''}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {m.name}
+                                  {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground">
+                                  {m.provider} · ${m.cost_per_1k_tokens}/1K tokens
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </TooltipTrigger>
