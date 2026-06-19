@@ -33,27 +33,31 @@ async function findDuplicate(title: string, content: string, subject?: string): 
   const normTitle = normalize(title);
   const fp = fingerprint(content);
 
-  // Check by title (subject + normalized title prefix)
+  // Check by title — use FULL normalized title (not just first 80 chars)
+  // because multiple PDFs can have same subject+year+type but different content
   const titleMatches = await db.knowledgeChunk.findMany({
     where: subject ? { subject } : {},
     select: { title: true, content: true }
   });
 
   for (const chunk of titleMatches) {
-    if (normalize(chunk.title).slice(0, 80) === normTitle.slice(0, 80)) {
-      return true; // title match
+    // Full title match (exact duplicate)
+    if (normalize(chunk.title) === normTitle) {
+      return true;
     }
-    // Check content fingerprint
+    // Content fingerprint match (exact same content)
     if (fingerprint(chunk.content) === fp) {
-      return true; // content match
+      return true;
     }
-    // Check if first 500 chars are >85% similar (substring overlap)
+    // High similarity check — >95% similar AND same title prefix
+    // (ICSE papers from same subject+year share boilerplate, so we need BOTH)
     const existing = normalize(chunk.content.slice(0, 500));
     const incoming = normalize(content.slice(0, 500));
     if (existing.length > 100 && incoming.length > 100) {
       const overlap = incoming.split(' ').filter(w => existing.includes(w)).length;
       const similarity = overlap / Math.max(incoming.split(' ').length, 1);
-      if (similarity > 0.85) return true;
+      // Only skip if extremely similar (>95%) — same paper, different scan
+      if (similarity > 0.95) return true;
     }
   }
   return false;
