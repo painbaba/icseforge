@@ -342,10 +342,19 @@ export function TutorTab() {
                         <SelectValue placeholder="Model" />
                       </SelectTrigger>
                       <SelectContent>
-                        {(modelsData?.models || []).filter(m => m.available).map((m) => (
-                          <SelectItem key={m.id} value={m.id}>
+                        {(modelsData?.models || []).map((m) => (
+                          <SelectItem
+                            key={m.id}
+                            value={m.id}
+                            disabled={!m.available}
+                            className={!m.available ? 'opacity-50' : ''}
+                          >
                             <div className="flex flex-col">
-                              <span className="font-medium">{m.name}</span>
+                              <span className="font-medium">
+                                {m.name}
+                                {!m.available && <span className="ml-1 text-[10px] text-muted-foreground">(add key)</span>}
+                                {m.available && m.free_tier && <span className="ml-1 text-[10px] text-emerald-600">🆓</span>}
+                              </span>
                               <span className="text-[10px] text-muted-foreground">{m.provider}</span>
                             </div>
                           </SelectItem>
@@ -362,7 +371,12 @@ export function TutorTab() {
                           <p className="text-xs">{m.description}</p>
                           <p className="text-xs"><strong>Best for:</strong> {m.best_for.join(', ')}</p>
                           <p className="text-xs"><strong>Why better:</strong> {m.why_better}</p>
-                          <p className="text-xs"><strong>Cost:</strong> ${m.cost_per_1k_tokens}/1K tokens · <strong>Latency:</strong> ~{m.avg_latency_ms}ms</p>
+                          <p className="text-xs"><strong>Cost:</strong> ${m.cost_per_1k_tokens}/1K tokens · <strong>Latency:</strong> ~{m.avg_latency_ms}ms{m.free_tier ? ' · 🆓 Free tier' : ''}</p>
+                          {!m.available && m.signup_url && (
+                            <p className="text-xs text-amber-600 dark:text-amber-400">
+                              <strong>Get free key:</strong> {m.signup_url}
+                            </p>
+                          )}
                         </div>
                       ) : 'Select a model';
                     })()}

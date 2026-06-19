@@ -1,19 +1,26 @@
-// Multi-Model AI Router
-// Supports: GLM-4.6 (z-ai, default), OpenAI GPT-4o, DeepSeek, Grok (xAI)
-// Features:
-//   - Auto-fallback when rate limits/errors occur
-//   - User-selectable model
-//   - "Auto" mode picks best model per task type
-//   - Capability descriptions for UI
+// Multi-Model AI Router — 10 providers with auto-fallback
 //
-// All providers use OpenAI-compatible API except z-ai which uses its own SDK.
+// Providers (all OpenAI-compatible except z-ai):
+//   1. GLM-4.6 (Z.ai) — default, always available, cheapest
+//   2. OpenAI GPT-4o — best math/code (region-restricted)
+//   3. DeepSeek V3 — best reasoning, cheapest CoT
+//   4. Grok-2 (xAI) — real-time web access
+//   5. OpenRouter — ONE key = 200+ models (GPT, Claude, Gemini, Llama, Mistral, etc.)
+//   6. Groq — FREE, ultra-fast Llama 3.3 (500+ tokens/sec)
+//   7. Google Gemini — FREE tier, multimodal
+//   8. Anthropic Claude — best writing quality (via OpenAI-compat proxy)
+//   9. Perplexity — native web search (sonar-large)
+//  10. Mistral — European, code-focused, free tier
+//
+// Auto-fallback order: [primary, glm, deepseek, groq, openrouter, openai, grok, gemini, claude, perplexity, mistral]
 
 import ZAI from 'z-ai-web-dev-sdk';
 import OpenAI from 'openai';
 
 // ─── Model definitions ─────────────────────────────────────
 
-export type ModelId = 'auto' | 'glm' | 'openai' | 'deepseek' | 'grok';
+export type ModelId = 'auto' | 'glm' | 'openai' | 'deepseek' | 'grok' |
+  'openrouter' | 'groq' | 'gemini' | 'claude' | 'perplexity' | 'mistral';
 
 export interface ModelInfo {
   id: ModelId;
@@ -22,12 +29,14 @@ export interface ModelInfo {
   description: string;
   capabilities: string[];
   best_for: string[];
-  cost_per_1k_tokens: number; // USD estimate
+  cost_per_1k_tokens: number;
   avg_latency_ms: number;
   reasoning: boolean;
   web_search_native: boolean;
   available: boolean;
   why_better: string;
+  free_tier?: boolean;
+  signup_url?: string;
 }
 
 export const MODELS: Record<ModelId, ModelInfo> = {
@@ -43,7 +52,7 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     reasoning: true,
     web_search_native: false,
     available: true,
-    why_better: 'Routes math → DeepSeek, current events → Grok, complex reasoning → GPT-4o, ICSE/general → GLM'
+    why_better: 'Routes math→DeepSeek, code→GPT-4o/Groq, web→Grok/Perplexity, writing→Claude, default→GLM'
   },
   glm: {
     id: 'glm',
@@ -56,8 +65,8 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     avg_latency_ms: 2500,
     reasoning: true,
     web_search_native: false,
-    available: true, // always available (z-ai-web-dev-sdk bundled)
-    why_better: 'Best price/performance for ICSE tutoring. Native Indian-English understanding. Built-in thinking mode.'
+    available: true,
+    why_better: 'Best price/performance for ICSE tutoring. Native Indian-English understanding. Built-in thinking mode. Always available.'
   },
   openai: {
     id: 'openai',
@@ -65,13 +74,14 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     provider: 'OpenAI',
     description: 'Strongest general-purpose model, best at math & code',
     capabilities: ['Reasoning', 'Math', 'Code', 'Multimodal', 'Long context'],
-    best_for: ['Complex numerical problems', 'Quadratic equations', 'Java programming (Computer Apps)', 'Geometry proofs'],
+    best_for: ['Complex numerical problems', 'Quadratic equations', 'Java programming', 'Geometry proofs'],
     cost_per_1k_tokens: 0.005,
     avg_latency_ms: 3500,
     reasoning: true,
     web_search_native: false,
     available: !!process.env.OPENAI_API_KEY,
-    why_better: 'Highest accuracy on math derivations and code generation. Best for Computer Applications Java problems.'
+    why_better: 'Highest accuracy on math derivations and code. Best for Computer Applications Java problems.',
+    signup_url: 'https://platform.openai.com/api-keys'
   },
   deepseek: {
     id: 'deepseek',
@@ -85,7 +95,8 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     reasoning: true,
     web_search_native: false,
     available: !!process.env.DEEPSEEK_API_KEY,
-    why_better: 'Deep chain-of-thought reasoning at 10x cheaper than GPT-4o. Best for multi-step numerical problems.'
+    why_better: 'Deep chain-of-thought reasoning at 10x cheaper than GPT-4o. Best for multi-step numerical problems.',
+    signup_url: 'https://platform.deepseek.com/api_keys'
   },
   grok: {
     id: 'grok',
@@ -99,7 +110,101 @@ export const MODELS: Record<ModelId, ModelInfo> = {
     reasoning: true,
     web_search_native: true,
     available: !!process.env.XAI_API_KEY,
-    why_better: 'Only model with native real-time web access. Best for "latest", "today", "current" questions.'
+    why_better: 'Only model with native real-time web access (besides Perplexity). Best for "latest", "today", "current" questions.',
+    signup_url: 'https://console.x.ai'
+  },
+  openrouter: {
+    id: 'openrouter',
+    name: 'OpenRouter (200+ models)',
+    provider: 'OpenRouter',
+    description: 'ONE key unlocks GPT-4o, Claude, Gemini, Llama, Mistral, and 200+ more',
+    capabilities: ['Multi-model', 'Reasoning', 'Code', 'Web', 'Multilingual', 'Multimodal'],
+    best_for: ['Ultimate diversification', 'Switch models without multiple keys', 'Access to ALL frontier models'],
+    cost_per_1k_tokens: 0.003,
+    avg_latency_ms: 3500,
+    reasoning: true,
+    web_search_native: true,
+    available: !!process.env.OPENROUTER_API_KEY,
+    why_better: 'Single API key gives access to every major model (GPT-4o, Claude 3.5, Gemini, Llama 3, Mistral, etc.). Pay-per-use. Best for diversification.',
+    signup_url: 'https://openrouter.ai/keys'
+  },
+  groq: {
+    id: 'groq',
+    name: 'Llama 3.3 70B (Groq)',
+    provider: 'Groq',
+    description: 'FREE tier, ultra-fast inference (500+ tokens/sec)',
+    capabilities: ['Fastest inference', 'Reasoning', 'Code', 'Multilingual'],
+    best_for: ['Quick answers', 'Real-time chat feel', 'Budget (free tier)', 'Llama 3 quality'],
+    cost_per_1k_tokens: 0.0002,
+    avg_latency_ms: 800,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GROQ_API_KEY,
+    why_better: 'FASTEST inference on the planet (500+ tokens/sec). FREE tier (30 RPM, 14,400/day). Llama 3.3 70B quality. Best for snappy real-time chat.',
+    free_tier: true,
+    signup_url: 'https://console.groq.com/keys'
+  },
+  gemini: {
+    id: 'gemini',
+    name: 'Gemini 1.5 Flash',
+    provider: 'Google',
+    description: 'FREE tier, multimodal (images), 1M token context',
+    capabilities: ['Multimodal', 'Long context (1M)', 'Reasoning', 'Multilingual'],
+    best_for: ['Image-based questions', 'Long documents', 'Diagrams', 'Free tier usage'],
+    cost_per_1k_tokens: 0.0004,
+    avg_latency_ms: 2000,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.GEMINI_API_KEY,
+    why_better: 'Only model with 1M token context (whole textbook in one prompt). Multimodal — can read diagrams/images. FREE tier (15 RPM, 1500/day).',
+    free_tier: true,
+    signup_url: 'https://aistudio.google.com/app/apikey'
+  },
+  claude: {
+    id: 'claude',
+    name: 'Claude 3.5 Sonnet',
+    provider: 'Anthropic',
+    description: 'Best writing quality, excellent for essays & English Literature',
+    capabilities: ['Writing', 'Analysis', 'Reasoning', 'Long context', 'Safety'],
+    best_for: ['English essays', 'History long-answers', 'Literature analysis', 'Merchant of Venice'],
+    cost_per_1k_tokens: 0.003,
+    avg_latency_ms: 3000,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.ANTHROPIC_API_KEY,
+    why_better: 'Best writing quality of any model. Excellent at English Literature analysis, essay structure, and nuanced reasoning. Best for ICSE English & History.',
+    signup_url: 'https://console.anthropic.com/settings/keys'
+  },
+  perplexity: {
+    id: 'perplexity',
+    name: 'Sonar Large (Perplexity)',
+    provider: 'Perplexity',
+    description: 'Native web search with citations, always current',
+    capabilities: ['Web search', 'Citations', 'Current events', 'Reasoning'],
+    best_for: ['Research questions', 'Cited answers', 'Current events', 'Latest syllabus updates'],
+    cost_per_1k_tokens: 0.002,
+    avg_latency_ms: 4000,
+    reasoning: true,
+    web_search_native: true,
+    available: !!process.env.PERPLEXITY_API_KEY,
+    why_better: 'Every answer comes with web citations. Best for research-style questions where you need to verify sources. Always current.',
+    signup_url: 'https://www.perplexity.ai/settings/api'
+  },
+  mistral: {
+    id: 'mistral',
+    name: 'Mistral Large',
+    provider: 'Mistral (EU)',
+    description: 'European AI, strong code generation, free tier',
+    capabilities: ['Code', 'Reasoning', 'Multilingual', 'European'],
+    best_for: ['Java code (Computer Apps)', 'European languages', 'GDPR-compliant', 'Function calling'],
+    cost_per_1k_tokens: 0.002,
+    avg_latency_ms: 2500,
+    reasoning: true,
+    web_search_native: false,
+    available: !!process.env.MISTRAL_API_KEY,
+    why_better: 'Best open-weight model for code generation. European (GDPR compliant). Free tier available. Strong at Java/Python.',
+    free_tier: true,
+    signup_url: 'https://console.mistral.ai/api-keys'
   }
 };
 
@@ -111,62 +216,122 @@ async function getZai() {
   return zaiInstance;
 }
 
-let openaiClient: OpenAI | null = null;
-function getOpenAI(): OpenAI {
-  if (!openaiClient) {
-    openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Cache OpenAI-compatible clients by provider
+const clientCache = new Map<string, OpenAI>();
+
+function getClient(provider: string): OpenAI {
+  if (clientCache.has(provider)) return clientCache.get(provider)!;
+
+  let client: OpenAI;
+  switch (provider) {
+    case 'openai':
+      client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      break;
+    case 'deepseek':
+      client = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: 'https://api.deepseek.com/v1' });
+      break;
+    case 'grok':
+      client = new OpenAI({ apiKey: process.env.XAI_API_KEY, baseURL: 'https://api.x.ai/v1' });
+      break;
+    case 'openrouter':
+      client = new OpenAI({
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: 'https://openrouter.ai/api/v1',
+        defaultHeaders: {
+          'HTTP-Referer': 'https://icse-project-forge.local',
+          'X-Title': 'ICSE Project Forge'
+        }
+      });
+      break;
+    case 'groq':
+      client = new OpenAI({ apiKey: process.env.GROQ_API_KEY, baseURL: 'https://api.groq.com/openai/v1' });
+      break;
+    case 'gemini':
+      client = new OpenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+        baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
+      });
+      break;
+    case 'claude':
+      // Anthropic now has OpenAI-compatible endpoint
+      client = new OpenAI({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        baseURL: 'https://api.anthropic.com/v1/openai/'
+      });
+      break;
+    case 'perplexity':
+      client = new OpenAI({ apiKey: process.env.PERPLEXITY_API_KEY, baseURL: 'https://api.perplexity.ai' });
+      break;
+    case 'mistral':
+      client = new OpenAI({ apiKey: process.env.MISTRAL_API_KEY, baseURL: 'https://api.mistral.ai/v1' });
+      break;
+    default:
+      throw new Error(`Unknown provider: ${provider}`);
   }
-  return openaiClient;
+
+  clientCache.set(provider, client);
+  return client;
 }
 
-let deepseekClient: OpenAI | null = null;
-function getDeepSeek(): OpenAI {
-  if (!deepseekClient) {
-    deepseekClient = new OpenAI({
-      apiKey: process.env.DEEPSEEK_API_KEY,
-      baseURL: 'https://api.deepseek.com/v1'
-    });
-  }
-  return deepseekClient;
-}
-
-let grokClient: OpenAI | null = null;
-function getGrok(): OpenAI {
-  if (!grokClient) {
-    grokClient = new OpenAI({
-      apiKey: process.env.XAI_API_KEY,
-      baseURL: 'https://api.x.ai/v1'
-    });
-  }
-  return grokClient;
-}
+// Model name mapping per provider
+const MODEL_NAMES: Record<string, string> = {
+  openai: 'gpt-4o',
+  deepseek: 'deepseek-reasoner',
+  grok: 'grok-2',
+  openrouter: 'anthropic/claude-3.5-sonnet', // default model via OpenRouter
+  groq: 'llama-3.3-70b-versatile',
+  gemini: 'gemini-1.5-flash',
+  claude: 'claude-3-5-sonnet-20241022',
+  perplexity: 'llama-3.1-sonar-large-128k-online',
+  mistral: 'mistral-large-latest'
+};
 
 // ─── Auto-model selection ──────────────────────────────────
 
 export function pickAutoModel(question: string, opts: { webNeeded?: boolean; needsReasoning?: boolean } = {}): ModelId {
   const q = question.toLowerCase();
 
-  // 1. If web search is needed → Grok (native real-time web)
-  if (opts.webNeeded && MODELS.grok.available) return 'grok';
+  // 1. If web search is needed → Grok (real-time) or Perplexity (cited)
+  if (opts.webNeeded) {
+    if (MODELS.grok.available) return 'grok';
+    if (MODELS.perplexity.available) return 'perplexity';
+    if (MODELS.openrouter.available) return 'openrouter';
+  }
 
-  // 2. Math/numerical/code → DeepSeek (best reasoning, cheapest)
+  // 2. Math/numerical → DeepSeek (best reasoning, cheapest) or Groq (fastest)
   const mathTriggers = ['calculate', 'solve', 'find the value', 'derive', 'prove', 'equation', 'quadratic',
     'trigonometry', 'geometry', 'matrix', 'determinant', 'probability', 'statistics',
     'calorimetry', 'ohm', 'numerical', 'integration', 'differentiation'];
-  if (mathTriggers.some(t => q.includes(t)) && MODELS.deepseek.available) return 'deepseek';
+  if (mathTriggers.some(t => q.includes(t))) {
+    if (MODELS.deepseek.available) return 'deepseek';
+    if (MODELS.groq.available) return 'groq'; // fast fallback
+  }
 
-  // 3. Java/code (Computer Applications) → GPT-4o (best at code)
+  // 3. Java/code (Computer Applications) → GPT-4o or Mistral (best at code)
   const codeTriggers = ['java', 'code', 'program', 'algorithm', 'function', 'class', 'constructor',
     'array', 'scanner', 'string method', 'bluej', 'compile'];
-  if (codeTriggers.some(t => q.includes(t)) && MODELS.openai.available) return 'openai';
+  if (codeTriggers.some(t => q.includes(t))) {
+    if (MODELS.openai.available) return 'openai';
+    if (MODELS.mistral.available) return 'mistral';
+    if (MODELS.openrouter.available) return 'openrouter';
+  }
 
-  // 4. Complex multi-step reasoning → GPT-4o if available, else DeepSeek
+  // 4. English Literature / essays / writing → Claude (best writing)
+  const writingTriggers = ['essay', 'write a', 'letter', 'notice', 'report', 'summary',
+    'merchant of venice', 'shakespeare', 'poem', 'poetry', 'describe', 'narrative'];
+  if (writingTriggers.some(t => q.includes(t))) {
+    if (MODELS.claude.available) return 'claude';
+    if (MODELS.openrouter.available) return 'openrouter';
+  }
+
+  // 5. Complex multi-step reasoning → GPT-4o or DeepSeek
   if (opts.needsReasoning) {
     if (MODELS.openai.available) return 'openai';
     if (MODELS.deepseek.available) return 'deepseek';
+    if (MODELS.groq.available) return 'groq';
   }
 
-  // 5. Default → GLM (cheapest, ICSE-tuned)
+  // 6. Default → GLM (cheapest, ICSE-tuned)
   return 'glm';
 }
 
@@ -183,19 +348,17 @@ export interface ModelCallResult {
 export interface ModelCallOptions {
   messages: { role: string; content: string }[];
   temperature?: number;
-  thinking?: boolean; // enable chain-of-thought
+  thinking?: boolean;
   maxTokens?: number;
 }
 
-// Call a specific model
 async function callSpecificModel(model: ModelId, opts: ModelCallOptions): Promise<ModelCallResult> {
   const startedAt = Date.now();
-  const messages = opts.messages;
 
   if (model === 'glm') {
     const zai = await getZai();
     const completion: any = await zai.chat.completions.create({
-      messages: messages.map(m => ({
+      messages: opts.messages.map(m => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
         content: m.content
       })) as any,
@@ -206,7 +369,6 @@ async function callSpecificModel(model: ModelId, opts: ModelCallOptions): Promis
     if (completion.choices[0]?.message?.reasoning) {
       reasoning = completion.choices[0].message.reasoning;
     }
-    // Extract <think> blocks
     const thinkMatch = content.match(/<think>([\s\S]*?)<\/think>/i);
     if (thinkMatch) {
       if (!reasoning) reasoning = thinkMatch[1].trim();
@@ -215,29 +377,15 @@ async function callSpecificModel(model: ModelId, opts: ModelCallOptions): Promis
     return { content, reasoning, model, durationMs: Date.now() - startedAt };
   }
 
-  // OpenAI-compatible providers (OpenAI, DeepSeek, Grok)
-  let client: OpenAI;
-  let modelName: string;
-
-  if (model === 'openai') {
-    client = getOpenAI();
-    modelName = 'gpt-4o';
-  } else if (model === 'deepseek') {
-    client = getDeepSeek();
-    modelName = 'deepseek-reasoner'; // DeepSeek-R1 for reasoning
-  } else if (model === 'grok') {
-    client = getGrok();
-    // Try grok-2 first, fall back to grok-beta if not found
-    modelName = 'grok-2';
-  } else {
-    throw new Error(`Unknown model: ${model}`);
-  }
+  // OpenAI-compatible providers
+  const client = getClient(model);
+  let modelName = MODEL_NAMES[model];
 
   let completion;
   try {
     completion = await client.chat.completions.create({
       model: modelName,
-      messages: messages.map(m => ({
+      messages: opts.messages.map(m => ({
         role: m.role === 'assistant' ? 'system' : m.role,
         content: m.content
       })) as any,
@@ -245,17 +393,21 @@ async function callSpecificModel(model: ModelId, opts: ModelCallOptions): Promis
       max_tokens: opts.maxTokens ?? 2000
     });
   } catch (err: any) {
-    // If model not found, try alternative model names
-    if (err.status === 400 && err.message?.includes('Model not found') && model === 'grok') {
+    // Retry with alternative model names for known fallbacks
+    if (model === 'grok' && err.message?.includes('Model not found')) {
+      modelName = 'grok-beta';
       completion = await client.chat.completions.create({
-        model: 'grok-beta',
-        messages: messages.map(m => ({
+        model: modelName,
+        messages: opts.messages.map(m => ({
           role: m.role === 'assistant' ? 'system' : m.role,
           content: m.content
         })) as any,
         temperature: opts.temperature ?? 0.5,
         max_tokens: opts.maxTokens ?? 2000
       });
+    } else if (model === 'claude' && err.status === 404) {
+      // Anthropic OpenAI-compat endpoint may not exist — fallback to OpenRouter proxy
+      throw new Error(`Claude direct endpoint failed (${err.message}). Set OPENROUTER_API_KEY to access Claude via OpenRouter.`);
     } else {
       throw err;
     }
@@ -281,8 +433,8 @@ async function callSpecificModel(model: ModelId, opts: ModelCallOptions): Promis
 // ─── Main router with auto-fallback ────────────────────────
 
 export interface RouterOptions extends ModelCallOptions {
-  preferredModel?: ModelId; // user's choice (default: 'auto')
-  question: string; // for auto-mode selection
+  preferredModel?: ModelId;
+  question: string;
   webNeeded?: boolean;
   needsReasoning?: boolean;
 }
@@ -293,13 +445,24 @@ export interface RouterResult extends ModelCallResult {
   fallbackReason?: string;
 }
 
-const FALLBACK_ORDER: ModelId[] = ['glm', 'deepseek', 'openai', 'grok'];
+// Fallback priority: cheapest + most reliable first
+const FALLBACK_ORDER: ModelId[] = [
+  'glm',        // always available, cheapest
+  'groq',       // free tier, ultra-fast
+  'deepseek',   // cheap, best reasoning
+  'openrouter', // multi-model
+  'openai',     // expensive but powerful
+  'grok',       // web access
+  'gemini',     // free tier
+  'claude',     // best writing
+  'perplexity', // cited web search
+  'mistral'     // code
+];
 
 export async function callModel(opts: RouterOptions): Promise<RouterResult> {
   const preferred = opts.preferredModel || 'auto';
   const attempted: ModelId[] = [];
 
-  // Determine primary model
   let primary: ModelId;
   if (preferred === 'auto') {
     primary = pickAutoModel(opts.question, {
@@ -310,7 +473,6 @@ export async function callModel(opts: RouterOptions): Promise<RouterResult> {
     primary = preferred;
   }
 
-  // Build attempt order: primary first, then fallbacks (excluding primary)
   const attemptOrder: ModelId[] = [primary, ...FALLBACK_ORDER.filter(m => m !== primary && MODELS[m].available)];
 
   let lastError: string | undefined;
@@ -336,30 +498,23 @@ export async function callModel(opts: RouterOptions): Promise<RouterResult> {
     } catch (err: any) {
       lastError = err.message;
       console.error(`Model ${model} failed: ${err.message}. Trying fallback...`);
-
-      // Check if it's a rate limit error → immediately try next
-      const isRateLimit = err.status === 429 || err.message?.includes('rate limit') ||
-        err.message?.includes('quota') || err.message?.includes('insufficient');
-      if (isRateLimit) continue;
-
-      // For other errors, also try fallback
       continue;
     }
   }
 
-  // All models failed
   throw new Error(`All models failed. Attempted: ${attempted.join(', ')}. Last error: ${lastError}`);
 }
 
 // ─── Status endpoint helper ────────────────────────────────
 
-export function getModelsStatus(): { models: ModelInfo[]; available: ModelId[] } {
+export function getModelsStatus(): { models: ModelInfo[]; available: ModelId[]; totalAvailable: number } {
   const available = (Object.keys(MODELS) as ModelId[]).filter(m => MODELS[m].available);
   return {
     models: (Object.keys(MODELS) as ModelId[]).map(m => ({
       ...MODELS[m],
       available: MODELS[m].available
     })),
-    available
+    available,
+    totalAvailable: available.length
   };
 }
