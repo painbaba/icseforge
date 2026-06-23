@@ -53,7 +53,11 @@ RUN mkdir -p /app/data /app/public/generated /app/db
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/upload ./upload
 
+# Copy Prisma CLI so db:push works at startup
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+
 EXPOSE 3000
 
 # Start script: push schema + start server
-CMD ["sh", "-c", "bun run db:push && node server.js"]
+CMD ["sh", "-c", "./node_modules/.bin/prisma db push && node server.js"]
