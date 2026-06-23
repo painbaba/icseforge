@@ -23,10 +23,18 @@ import { TaskManagerTab } from '@/components/icse/TaskManagerTab';
 import { OnboardingWizard } from '@/components/icse/OnboardingWizard';
 import type { PipelineResponse, UploadResponse, ExtractedProject, ForgeQueueItem } from '@/components/icse/types';
 import { toast } from 'sonner';
+import { TopAdBanner, SidebarAdCard, AdSettingsManager, SPONSORS } from '@/components/icse/AdBanner';
 
 export default function Home() {
   // Board state (lifted up — drives all AI behavior)
   const [board, setBoard] = useState<string>('ICSE');
+
+  // Ad System state
+  const [activeSponsorId, setActiveSponsorId] = useState<string>('oswaal');
+  const [isTopAdDismissed, setIsTopAdDismissed] = useState<boolean>(false);
+  const [isSidebarAdDismissed, setIsSidebarAdDismissed] = useState<boolean>(false);
+
+  const selectedSponsor = SPONSORS.find(s => s.id === activeSponsorId) || SPONSORS[0];
 
   // Session and profile state
   const [user, setUser] = useState<any | null>(null);
@@ -289,6 +297,12 @@ export default function Home() {
             />
           </div>
         </nav>
+        
+        <TopAdBanner 
+          sponsor={selectedSponsor} 
+          onDismiss={() => setIsTopAdDismissed(true)} 
+          isDismissed={isTopAdDismissed} 
+        />
 
         {/* Hero Banner */}
         <header className="relative overflow-hidden py-12 md:py-16 bg-background border-b border-black/5 dark:border-white/5">
@@ -471,7 +485,24 @@ export default function Home() {
               <TaskManagerTab />
             </TabsContent>
           </Tabs>
+
+          <AdSettingsManager
+            activeSponsorId={activeSponsorId}
+            onChangeSponsor={setActiveSponsorId}
+            onResetDismissed={() => {
+              setIsTopAdDismissed(false);
+              setIsSidebarAdDismissed(false);
+            }}
+            isTopDismissed={isTopAdDismissed}
+            isSidebarDismissed={isSidebarAdDismissed}
+          />
         </main>
+
+        <SidebarAdCard
+          sponsor={selectedSponsor}
+          onDismiss={() => setIsSidebarAdDismissed(true)}
+          isDismissed={isSidebarAdDismissed}
+        />
 
         {/* ────────── Footer (sticky to bottom via flex) ────────── */}
         <footer className="mt-auto border-t bg-muted/30">

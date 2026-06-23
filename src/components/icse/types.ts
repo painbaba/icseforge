@@ -124,6 +124,7 @@ export interface UploadResponse {
   extractedText: string;
   textLength: number;
   preview: string;
+  url?: string;
 }
 
 // Multi-project extraction types

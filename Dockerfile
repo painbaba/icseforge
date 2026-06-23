@@ -39,6 +39,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV DATABASE_URL=file:/app/data/custom.db
 
 # Use entrypoint that auto-seeds KB on first boot
 CMD ["/app/entrypoint.sh"]

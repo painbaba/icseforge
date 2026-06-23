@@ -18,45 +18,79 @@ const UPLOAD_DIR = path.join(process.cwd(), 'upload');
 // ─── Helpers ───────────────────────────────────────────────
 
 // Normalize a string for comparison (lowercase, collapse whitespace, strip punctuation)
-function normalize(s: string): string {
+function normalize(s: any): string {
+  if (typeof s !== 'string') {
+    s = String(s || '');
+  }
   return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 // Generate a content fingerprint (first 200 chars normalized + length)
-function fingerprint(content: string): string {
+function fingerprint(content: any): string {
+  if (typeof content !== 'string') {
+    content = typeof content === 'object' ? JSON.stringify(content) : String(content || '');
+  }
+  if (!content) return '';
   const n = normalize(content.slice(0, 500));
   return `${n.slice(0, 200)}|len:${content.length}`;
 }
 
+
+interface CachedMatch {
+  title: string;
+  content: string;
+  normTitle: string;
+  fp: string;
+  contentStart: string;
+}
+
+const matchCache: Record<string, CachedMatch[]> = {};
+
 // Check if a chunk with similar title OR content already exists
-async function findDuplicate(title: string, content: string, subject?: string, board?: string, className?: string): Promise<boolean> {
+async function findDuplicate(title: any, content: any, subject?: string, board?: string, className?: string): Promise<boolean> {
+  if (typeof title !== 'string') {
+    title = String(title || '');
+  }
+  if (typeof content !== 'string') {
+    content = typeof content === 'object' ? JSON.stringify(content) : String(content || '');
+  }
+  if (!title || !content) return true; // Skip invalid/empty chunks by treating them as duplicates
   const normTitle = normalize(title);
   const fp = fingerprint(content);
+  const normIncomingStart = normalize(content.slice(0, 500));
 
-  // Check by title — use FULL normalized title (not just first 80 chars)
-  // because multiple PDFs can have same subject+year+type but different content
-  const titleMatches = await db.knowledgeChunk.findMany({
-    where: {
-      ...(subject && { subject }),
-      ...(board && { board }),
-      ...(className && { className })
-    },
-    select: { title: true, content: true }
-  });
+  const cacheKey = `${board || ''}|${subject || ''}|${className || ''}`;
+  if (!matchCache[cacheKey]) {
+    const rawMatches = await db.knowledgeChunk.findMany({
+      where: {
+        ...(subject && { subject }),
+        ...(board && { board }),
+        ...(className && { className })
+      },
+      select: { title: true, content: true }
+    });
+    matchCache[cacheKey] = rawMatches.map(m => ({
+      title: m.title,
+      content: m.content,
+      normTitle: normalize(m.title),
+      fp: fingerprint(m.content),
+      contentStart: normalize(m.content.slice(0, 500))
+    }));
+  }
+  const titleMatches = matchCache[cacheKey];
 
   for (const chunk of titleMatches) {
     // Full title match (exact duplicate)
-    if (normalize(chunk.title) === normTitle) {
+    if (chunk.normTitle === normTitle) {
       return true;
     }
     // Content fingerprint match (exact same content)
-    if (fingerprint(chunk.content) === fp) {
+    if (chunk.fp === fp) {
       return true;
     }
     // High similarity check — >95% similar AND same title prefix
-    // (ICSE papers from same subject+year share boilerplate, so we need BOTH)
-    const existing = normalize(chunk.content.slice(0, 500));
-    const incoming = normalize(content.slice(0, 500));
+    const existing = chunk.contentStart;
+    const incoming = normIncomingStart;
     if (existing.length > 100 && incoming.length > 100) {
       const overlap = incoming.split(' ').filter(w => existing.includes(w)).length;
       const similarity = overlap / Math.max(incoming.split(' ').length, 1);
@@ -100,7 +134,10 @@ async function parseFile(filePath: string): Promise<{ chunks: ParsedChunk[]; for
 
 // Parse JSON — auto-detect structure
 async function parseJsonFile(filePath: string): Promise<{ chunks: ParsedChunk[]; format: string }> {
-  const raw = await fs.readFile(filePath, 'utf-8');
+  let raw = await fs.readFile(filePath, 'utf-8');
+  if (raw.startsWith('\uFEFF')) {
+    raw = raw.slice(1);
+  }
   const data = JSON.parse(raw);
   const chunks: ParsedChunk[] = [];
 
@@ -109,6 +146,7 @@ async function parseJsonFile(filePath: string): Promise<{ chunks: ParsedChunk[];
   // Pattern 00: Array of structured chunks (e.g. cbse-class-*.json, isc-class12-*.json)
   if (Array.isArray(data) && data.length > 0 && data[0]?.content && data[0]?.title) {
     for (const item of data) {
+      if (!item || !item.title || !item.content) continue; // Skip invalid or 404 error entries
       chunks.push({
         board: item.board || 'ICSE',
         subject: normalizeSubject(item.subject || 'General'),
@@ -435,7 +473,10 @@ function normalizeSubject(s: string): string {
 }
 
 async function parseTextFile(filePath: string): Promise<{ chunks: ParsedChunk[]; format: string }> {
-  const content = await fs.readFile(filePath, 'utf-8');
+  let content = await fs.readFile(filePath, 'utf-8');
+  if (content.startsWith('\uFEFF')) {
+    content = content.slice(1);
+  }
   // Split by ## headers if present, else by double newlines
   const sections = content.split(/^## /m).filter(s => s.trim().length > 50);
   const chunks: ParsedChunk[] = [];
@@ -503,7 +544,10 @@ async function parseDocxFile(filePath: string): Promise<{ chunks: ParsedChunk[];
 }
 
 async function parseCsvFile(filePath: string): Promise<{ chunks: ParsedChunk[]; format: string }> {
-  const content = await fs.readFile(filePath, 'utf-8');
+  let content = await fs.readFile(filePath, 'utf-8');
+  if (content.startsWith('\uFEFF')) {
+    content = content.slice(1);
+  }
   const lines = content.split('\n').filter(l => l.trim());
   if (lines.length < 2) return { chunks: [], format: 'csv_empty' };
   const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
@@ -598,9 +642,14 @@ async function main() {
     let ingested = 0;
     let skipped = 0;
     const sample: string[] = [];
+    const chunksToIngest: any[] = [];
 
     for (const chunk of parsed.chunks) {
       totalParsed++;
+      if (typeof chunk.title !== 'string') chunk.title = String(chunk.title || '');
+      if (typeof chunk.content !== 'string') {
+        chunk.content = typeof chunk.content === 'object' ? JSON.stringify(chunk.content) : String(chunk.content || '');
+      }
       // Check for duplicate
       const isDup = await findDuplicate(chunk.title, chunk.content, chunk.subject, chunk.board, chunk.className);
       if (isDup) {
@@ -613,14 +662,66 @@ async function main() {
         sample.push(`  ➕ NEW: ${chunk.title.slice(0, 70)}`);
         ingested++;
         totalIngested++;
+        // Add to cache so internal duplicates in the same file are detected
+        const cacheKey = `${chunk.board || 'ICSE'}|${chunk.subject || 'General'}|${chunk.className || '10'}`;
+        if (matchCache[cacheKey]) {
+          matchCache[cacheKey].push({
+            title: chunk.title,
+            content: chunk.content,
+            normTitle: normalize(chunk.title),
+            fp: fingerprint(chunk.content),
+            contentStart: normalize(chunk.content.slice(0, 500))
+          });
+        }
       } else {
+        const tagsStr = Array.isArray(chunk.tags)
+          ? chunk.tags.join(',')
+          : (typeof chunk.tags === 'string' ? chunk.tags : (chunk.tags ? String(chunk.tags) : ''));
+        
+        chunksToIngest.push({
+          board: String(chunk.board || 'ICSE'),
+          subject: String(chunk.subject || 'General'),
+          className: String(chunk.className || '10'),
+          category: String(chunk.category || 'syllabus'),
+          chapter: String(chunk.chapter || ''),
+          title: String(chunk.title || ''),
+          content: String(chunk.content || ''),
+          tags: tagsStr,
+          source: 'user_upload'
+        });
+        
+        sample.push(`  ➕ INGESTED: ${chunk.title.slice(0, 70)}`);
+        ingested++;
+        totalIngested++;
+        // Add to cache so internal duplicates in the same file are detected
+        const cacheKey = `${chunk.board || 'ICSE'}|${chunk.subject || 'General'}|${chunk.className || '10'}`;
+        if (matchCache[cacheKey]) {
+          matchCache[cacheKey].push({
+            title: chunk.title,
+            content: chunk.content,
+            normTitle: normalize(chunk.title),
+            fp: fingerprint(chunk.content),
+            contentStart: normalize(chunk.content.slice(0, 500))
+          });
+        }
+      }
+    }
+
+    if (!dryRun && chunksToIngest.length > 0) {
+      const BATCH_SIZE = 100;
+      for (let i = 0; i < chunksToIngest.length; i += BATCH_SIZE) {
+        const batch = chunksToIngest.slice(i, i + BATCH_SIZE);
         try {
-          await addKnowledge({ ...chunk, source: 'user_upload' });
-          sample.push(`  ➕ INGESTED: ${chunk.title.slice(0, 70)}`);
-          ingested++;
-          totalIngested++;
+          await db.knowledgeChunk.createMany({ data: batch });
         } catch (e: any) {
-          sample.push(`  ❌ FAIL: ${e.message.slice(0, 60)}`);
+          console.error(`\n  [Batch insert failed, falling back to sequential: ${e.message}]`);
+          for (const item of batch) {
+            try {
+              await addKnowledge(item);
+            } catch (err: any) {
+              console.error(`  ❌ FAIL: ${err.message.slice(0, 60)}`);
+            }
+          }
         }
       }
     }

@@ -10,8 +10,9 @@ import { Loader2, Camera, Upload, BookOpen, PenTool, ArrowRight } from 'lucide-r
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { EvaluationReport } from './EvaluationReport';
+import { InlineAdCard, Sponsor, SPONSORS } from './AdBanner';
 
-export function MockMasteryTab() {
+export function MockMasteryTab({ sponsor }: { sponsor?: Sponsor }) {
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [paper, setPaper] = useState<any>(null);
@@ -135,60 +136,69 @@ export function MockMasteryTab() {
       </div>
 
       {!paper ? (
-        <Card className="border-primary/20 shadow-lg max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Generate a Predictive Mock Exam</CardTitle>
-            <CardDescription>
-              Our AI analyzes past paper topic frequencies to generate a highly probable mock exam targeting your specific board.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={generateExam} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Board</Label>
-                  <Select name="board" defaultValue="ICSE">
-                    <SelectTrigger><SelectValue placeholder="Select board" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ICSE">ICSE</SelectItem>
-                      <SelectItem value="ISC">ISC</SelectItem>
-                      <SelectItem value="CBSE">CBSE</SelectItem>
-                    </SelectContent>
-                  </Select>
+        <div className="max-w-2xl mx-auto space-y-6">
+          <Card className="border-primary/20 shadow-lg">
+            <CardHeader>
+              <CardTitle>Generate a Predictive Mock Exam</CardTitle>
+              <CardDescription>
+                Our AI analyzes past paper topic frequencies to generate a highly probable mock exam targeting your specific board.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={generateExam} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Board</Label>
+                    <Select name="board" defaultValue="ICSE">
+                      <SelectTrigger><SelectValue placeholder="Select board" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ICSE">ICSE</SelectItem>
+                        <SelectItem value="ISC">ISC</SelectItem>
+                        <SelectItem value="CBSE">CBSE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Class</Label>
+                    <Select name="className" defaultValue="10">
+                      <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="10">Class 10</SelectItem>
+                        <SelectItem value="12">Class 12</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Class</Label>
-                  <Select name="className" defaultValue="10">
-                    <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">Class 10</SelectItem>
-                      <SelectItem value="12">Class 12</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Subject</Label>
+                    <Input name="subject" placeholder="e.g. Geography" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Marks</Label>
+                    <Select name="marks" defaultValue="40">
+                      <SelectTrigger><SelectValue placeholder="Select marks" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="40">40 Marks (1 Hour)</SelectItem>
+                        <SelectItem value="80">80 Marks (2 Hours)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Subject</Label>
-                  <Input name="subject" placeholder="e.g. Geography" required />
-                </div>
-                <div className="space-y-2">
-                  <Label>Marks</Label>
-                  <Select name="marks" defaultValue="40">
-                    <SelectTrigger><SelectValue placeholder="Select marks" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="40">40 Marks (1 Hour)</SelectItem>
-                      <SelectItem value="80">80 Marks (2 Hours)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <Button type="submit" className="w-full h-12 text-lg" disabled={isGenerating}>
-                {isGenerating ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing Past Papers...</> : 'Generate Mock Exam'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <Button type="submit" className="w-full h-12 text-lg" disabled={isGenerating}>
+                  {isGenerating ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing Past Papers...</> : 'Generate Mock Exam'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <div className="pt-2">
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+              Recommended Study Materials
+            </h3>
+            <InlineAdCard sponsor={sponsor || SPONSORS[0]} />
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Paper View */}

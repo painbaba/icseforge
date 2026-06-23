@@ -15,9 +15,9 @@ const UPLOAD_DIR = path.join(process.cwd(), 'upload');
 async function main() {
   console.log('=== DEPLOYMENT SEED ===\n');
 
-  // 1. Push schema
-  console.log('1. Pushing Prisma schema...');
-  execSync('npx prisma db push', { stdio: 'inherit' });
+  // 1. Push schema (Bypassed since schema is already deployed on Turso)
+  console.log('1. Schema is already deployed on Turso, skipping local push...');
+  // execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
 
   // 2. Create FTS5 index using Prisma client raw execution (Turso/SQLite compatible)
   console.log('\n2. Creating FTS5 index...');

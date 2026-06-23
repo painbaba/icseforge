@@ -203,15 +203,15 @@ export async function addKnowledge(chunk: {
 
   await db.knowledgeChunk.create({
     data: {
-      board: chunk.board || 'ICSE',
-      subject: chunk.subject,
-      className: chunk.className,
-      category: chunk.category,
-      chapter: chunk.chapter,
-      title: chunk.title,
-      content: chunk.content,
+      board: String(chunk.board || 'ICSE'),
+      subject: String(chunk.subject),
+      className: String(chunk.className),
+      category: String(chunk.category),
+      chapter: String(chunk.chapter || ''),
+      title: String(chunk.title || ''),
+      content: String(chunk.content || ''),
       tags: tagsStr,
-      source: chunk.source ?? 'user_upload'
+      source: String(chunk.source ?? 'user_upload')
     }
   });
   // FTS5 sync trigger handles index update automatically
