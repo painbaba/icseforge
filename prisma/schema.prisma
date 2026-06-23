@@ -157,3 +157,29 @@ model Task {
 
   @@index([userId, date])
 }
+
+model BattleRoom {
+  id                   String   @id @default(cuid())
+  roomCode             String   @unique @map("room_code")
+  className            String   @map("class_name")
+  subject              String
+  topic                String
+  questions            String   // JSON string of 10 MCQs
+  players              String   // JSON string of players (name, score, answers submitted)
+  status               String   @default("waiting") // waiting | active | completed
+  timer                Int      @default(15) // seconds per question
+  currentQuestionIndex Int      @default(0) @map("current_question_index")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+}
+
+model BattleLeaderboard {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  points        Int      @default(0)
+  battlesPlayed Int      @default(0) @map("battles_played")
+  battlesWon    Int      @default(0) @map("battles_won")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+}
+

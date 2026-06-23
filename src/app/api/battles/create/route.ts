@@ -1,0 +1,188 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { retrieve } from '@/lib/knowledge';
+import { callModel } from '@/lib/models';
+
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
+function generateRoomCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { playerName, className, board } = await req.json();
+    if (!playerName) {
+      return NextResponse.json({ error: 'Player name is required.' }, { status: 400 });
+    }
+
+    const activeBoard = board || 'ICSE';
+    const activeClass = className || '10';
+    const activeTopic = 'Full Syllabus';
+    let activeSubject = '';
+
+    // Find unique subjects for the selected class and board in the DB
+    const subjectsInDb = await db.knowledgeChunk.findMany({
+      where: {
+        board: activeBoard,
+        className: activeClass
+      },
+      select: {
+        subject: true
+      },
+      distinct: ['subject']
+    });
+
+    const subjectsList = subjectsInDb.map(s => s.subject).filter(Boolean);
+    if (subjectsList.length > 0) {
+      activeSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
+    } else {
+      // Fallback subjects
+      const fallbackSubjects = activeBoard === 'CBSE'
+        ? ['Science', 'Mathematics', 'Social Science', 'English']
+        : ['Physics', 'Chemistry', 'Biology', 'Mathematics', 'History', 'Geography', 'English'];
+      activeSubject = fallbackSubjects[Math.floor(Math.random() * fallbackSubjects.length)];
+    }
+
+    // 1. Retrieve RAG chunks covering the full syllabus
+    let contextStr = '';
+    const matchingChunksCount = await db.knowledgeChunk.count({
+      where: {
+        board: activeBoard,
+        className: activeClass,
+        subject: activeSubject
+      }
+    });
+
+    if (matchingChunksCount > 0) {
+      // Retrieve up to 5 random offsets to get varied topics/chapters
+      const retrievedChunks: any[] = [];
+      const numToRetrieve = Math.min(5, matchingChunksCount);
+      const usedOffsets = new Set<number>();
+      
+      for (let i = 0; i < numToRetrieve; i++) {
+        let offset;
+        let attempts = 0;
+        do {
+          offset = Math.floor(Math.random() * matchingChunksCount);
+          attempts++;
+        } while (usedOffsets.has(offset) && usedOffsets.size < matchingChunksCount && attempts < 100);
+        usedOffsets.add(offset);
+
+        const chunk = await db.knowledgeChunk.findFirst({
+          where: {
+            board: activeBoard,
+            className: activeClass,
+            subject: activeSubject
+          },
+          skip: offset
+        });
+        if (chunk) {
+          retrievedChunks.push(chunk);
+        }
+      }
+      contextStr = retrievedChunks.map(c => `TITLE: ${c.title}\nCHAPTER: ${c.chapter || 'N/A'}\nCONTENT: ${c.content}`).join('\n\n---\n\n');
+    }
+
+    // 2. Call AI to generate 10 high-quality MCQ questions spanning the full syllabus
+    const systemPrompt = `You are the MULTIPLAYER BATTLE GENERATOR AGENT for ${activeBoard} Board.
+Create a set of exactly 10 multiple-choice questions (MCQs) for the given subject covering the FULL SYLLABUS based on the provided context.
+Each question must:
+1. Be challenging and typical of ${activeBoard} Board standard (Class ${activeClass} level).
+2. Have 4 options (A, B, C, D) and exactly 1 correct answer.
+3. Have a brief, simple explanation.
+4. Span different topics/chapters to test general knowledge of the entire subject (Full Syllabus).
+
+Respond ONLY with a single valid JSON object following this schema (do not include markdown code fences or any surrounding text):
+{
+  "questions": [
+    {
+      "q": "Question text here...",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answerIndex": 0, // 0-based index (0=A, 1=B, 2=C, 3=D)
+      "explanation": "Brief explanation of the answer..."
+    }
+  ]
+}`;
+
+    const userPrompt = `Subject: ${activeSubject} | Class: ${activeClass} | Topic: ${activeTopic} | Board: ${activeBoard}
+    
+CONTEXT FROM SYLLABUS CHUNKS:
+${contextStr || `(use general ${activeBoard} Class ${activeClass} ${activeSubject} knowledge)`}`;
+
+    const aiResponse = await callModel({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: 0.6,
+      question: `Generate 10 MCQs for ${activeBoard} Class ${activeClass} ${activeSubject} - Full Syllabus`,
+      preferredModel: 'auto'
+    });
+
+    const jsonMatch = aiResponse.content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('AI failed to return valid JSON: ' + aiResponse.content);
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!parsed.questions || parsed.questions.length < 5) {
+      throw new Error('Invalid quiz format generated by AI');
+    }
+
+    // Ensure we have exactly 10 questions
+    let finalQuestions = parsed.questions.slice(0, 10);
+    while (finalQuestions.length < 10) {
+      finalQuestions.push({
+        q: `Additional question about ${activeSubject}: select the most appropriate fact.`,
+        options: ['Correct fact', 'Incorrect fact 1', 'Incorrect fact 2', 'Incorrect fact 3'],
+        answerIndex: 0,
+        explanation: 'Based on syllabus concepts.'
+      });
+    }
+
+    // 3. Create room in DB
+    const roomCode = generateRoomCode();
+    const playersList = [{
+      name: playerName,
+      score: 0,
+      answers: {},
+      answersAt: {},
+      joinedAt: Date.now()
+    }];
+
+    const room = await db.battleRoom.create({
+      data: {
+        roomCode,
+        className: activeClass,
+        subject: activeSubject,
+        topic: activeTopic,
+        questions: JSON.stringify({ list: finalQuestions, questionStartedAt: 0 }),
+        players: JSON.stringify(playersList),
+        status: 'waiting',
+        timer: 15,
+        currentQuestionIndex: 0
+      }
+    });
+
+    return NextResponse.json({
+      roomCode: room.roomCode,
+      className: room.className,
+      subject: room.subject,
+      topic: room.topic,
+      players: playersList,
+      status: room.status,
+      timer: room.timer,
+      currentQuestionIndex: room.currentQuestionIndex
+    });
+
+  } catch (err: any) {
+    console.error('Create battle room error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
