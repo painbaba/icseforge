@@ -10,14 +10,25 @@ const getPrismaClient = () => {
   const url = process.env.TURSO_DATABASE_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
 
-  if (url && url !== 'undefined' && token && token !== 'undefined') {
-    const adapter = new PrismaLibSql({
-      url,
-      authToken: token,
-    })
-    return new PrismaClient({
-      adapter,
-    })
+  const isValidUrl = url && (
+    url.startsWith('libsql://') || 
+    url.startsWith('https://') || 
+    url.startsWith('http://') || 
+    url.startsWith('file:')
+  );
+
+  if (isValidUrl && token && token !== 'undefined' && token !== 'null') {
+    try {
+      const adapter = new PrismaLibSql({
+        url,
+        authToken: token,
+      })
+      return new PrismaClient({
+        adapter,
+      })
+    } catch (e) {
+      console.error('Failed to initialize Prisma with Turso/Libsql adapter:', e)
+    }
   }
 
   return new PrismaClient({
