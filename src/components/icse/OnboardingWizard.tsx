@@ -443,6 +443,25 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
       setClassName(data.user.className || '10');
       vibrate([30, 50, 30]);
       toast.success(`Welcome ${data.user.name || data.user.email}!`);
+
+      // Check if user is already onboarded
+      try {
+        const pRes = await fetch('/api/profile');
+        if (pRes.ok) {
+          const pData = await pRes.json();
+          if (pData?.profile) {
+            const interests = JSON.parse(pData.profile.interests || '[]');
+            const strengths = JSON.parse(pData.profile.strengths || '[]');
+            if (interests.length > 0 || strengths.length > 0) {
+              onComplete(data.user);
+              return;
+            }
+          }
+        }
+      } catch (profileErr) {
+        console.warn('Onboarding check failed, falling back to full flow:', profileErr);
+      }
+
       setDirection(1);
       setStep(1);
     } catch { toast.error('Network error during Google Sign-in'); }
