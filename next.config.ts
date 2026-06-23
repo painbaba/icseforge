@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  distDir: ".next_user",
   output: "standalone",
   typescript: {
     ignoreBuildErrors: true,

@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source not "../../.next_user";
+@source not "../../.next";
 @import "../../node_modules/tw-animate-css/dist/tw-animate.css";
 
 @custom-variant dark (&:is(.dark *));
