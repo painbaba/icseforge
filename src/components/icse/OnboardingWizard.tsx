@@ -1,7 +1,5 @@
-'use client';
-
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { toast } from 'sonner';
 import {
   GraduationCap, Sparkles, BookOpenCheck, BrainCircuit, Wand2,
@@ -26,6 +24,171 @@ interface AuthUser {
 interface OnboardingWizardProps {
   initialUser: AuthUser | null;
   onComplete: (user: AuthUser) => void;
+}
+
+/* ─────────────────────────── Intro Step Definition ─────────────────────────── */
+interface OnboardingIntroStep {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  penText: string;
+  icon: string;
+  accentFrom: string;
+  accentTo: string;
+  accentVia?: string;
+  tags: string[];
+}
+
+const INTRO_STEPS: OnboardingIntroStep[] = [
+  {
+    id: 1,
+    title: "Welcome to",
+    subtitle: "Project Forge",
+    description: "Your AI-powered companion for crafting stellar board-level projects & mock papers — all forged from your own notes.",
+    penText: "Hello, Scholar!",
+    icon: "✦",
+    accentFrom: "#6366f1",
+    accentTo: "#a78bfa",
+    accentVia: "#818cf8",
+    tags: ["Workspace", "Multi-Agent AI", "Board-Ready"]
+  },
+  {
+    id: 2,
+    title: "Ingest Your Study Material",
+    subtitle: "RAG Knowledge Base",
+    description: "Drop in your handwritten notes, syllabus PDFs, or textbook chapters. Our RAG system structures and indexes it instantly.",
+    penText: "Notes → Ingested",
+    icon: "📚",
+    accentFrom: "#06b6d4",
+    accentTo: "#22d3ee",
+    accentVia: "#67e8f9",
+    tags: ["RAG Search", "PDF Parser", "Smart Index"]
+  },
+  {
+    id: 3,
+    title: "Generate Complete Projects",
+    subtitle: "Multi-Agent Forge",
+    description: "Our specialized AI agents outline, write, illustrate, and verify fully cited school projects with detailed bibliography.",
+    penText: "Forge Completed!",
+    icon: "⚡",
+    accentFrom: "#f59e0b",
+    accentTo: "#fbbf24",
+    accentVia: "#fcd34d",
+    tags: ["Bibliography", "Auto-Diagrams", "Self-Correction"]
+  },
+  {
+    id: 4,
+    title: "Study Smarter with",
+    subtitle: "AI Tutor & Partner",
+    description: "Chat with a customized AI Tutor matching your favorite learning style, or study alongside an interactive Partner.",
+    penText: "Learn Active!",
+    icon: "🧠",
+    accentFrom: "#ec4899",
+    accentTo: "#f472b6",
+    accentVia: "#f9a8d4",
+    tags: ["Socratic Tutor", "Peer Partner", "Custom Style"]
+  },
+  {
+    id: 5,
+    title: "Compete in Live",
+    subtitle: "Multiplayer Battles",
+    description: "Engage in timed, 10-question syllabus-wide battles with classmates. Earn gamified speed points and top the leaderboard!",
+    penText: "Battle Arena!",
+    icon: "🎮",
+    accentFrom: "#10b981",
+    accentTo: "#34d399",
+    accentVia: "#6ed7b1",
+    tags: ["Live Short-Polling", "Real-Time Sync", "Full Syllabus"]
+  },
+  {
+    id: 6,
+    title: "Consolidated Suite of",
+    subtitle: "Smart Study Tools",
+    description: "Plan your routine with the Timetable, manage homework Tasks, test yourself with Active Recall, and run Virtual Labs.",
+    penText: "Full Toolkit!",
+    icon: "🛠️",
+    accentFrom: "#8b5cf6",
+    accentTo: "#c084fc",
+    accentVia: "#a78bfa",
+    tags: ["Routine Planner", "Virtual Lab", "Recall Flashcards"]
+  }
+];
+
+/* ─────────── SVG Handwriting Path Generator ─────────── */
+function generateHandwritingPath(text: string): string {
+  const paths: string[] = [];
+  let x = 30;
+  const y = 70;
+  const charWidth = 38;
+
+  for (let i = 0; i < text.length; i++) {
+    const cx = x + i * charWidth;
+    const char = text[i];
+    if (char === " ") continue;
+
+    const jitter = () => (Math.random() - 0.5) * 6;
+    const strokeVariants = [
+      `M ${cx + jitter()} ${y - 18 + jitter()} Q ${cx + 4 + jitter()} ${y - 5 + jitter()} ${cx + 2 + jitter()} ${y + 14 + jitter()}`,
+      `M ${cx - 5 + jitter()} ${y - 10 + jitter()} C ${cx + 8 + jitter()} ${y - 20 + jitter()} ${cx + 15 + jitter()} ${y + 5 + jitter()} ${cx + 3 + jitter()} ${y + 12 + jitter()}`,
+      `M ${cx - 2 + jitter()} ${y - 14 + jitter()} Q ${cx + 12 + jitter()} ${y - 18 + jitter()} ${cx + 18 + jitter()} ${y - 8 + jitter()} Q ${cx + 20 + jitter()} ${y + 4 + jitter()} ${cx + 6 + jitter()} ${y + 12 + jitter()}`,
+    ];
+    paths.push(strokeVariants[i % 3]);
+  }
+  return paths.join(" ");
+}
+
+/* ─────────── Floating Particle ─────────── */
+function Particle({ delay, size, color }: { delay: number; size: number; color: string }) {
+  const startX = Math.random() * 100;
+  const startY = Math.random() * 100;
+  return (
+    <motion.div
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: size,
+        height: size,
+        left: `${startX}%`,
+        top: `${startY}%`,
+        background: color,
+        boxShadow: `0 0 ${size * 3}px ${color}`,
+      }}
+      animate={{
+        y: [0, -30, 10, -20, 0],
+        x: [0, 15, -10, 20, 0],
+        opacity: [0, 0.8, 0.4, 0.9, 0],
+        scale: [0.5, 1.2, 0.8, 1, 0.5],
+      }}
+      transition={{
+        duration: 6 + Math.random() * 4,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+  );
+}
+
+/* ─────────── Ink Splatter Effect ─────────── */
+function InkSplatter({ color }: { color: string }) {
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      initial={{ scale: 0, opacity: 0.7 }}
+      animate={{ scale: [0, 1.5, 1.2], opacity: [0.7, 0.3, 0] }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      style={{
+        width: 120,
+        height: 120,
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        borderRadius: "60% 40% 50% 40% / 50% 60% 40% 50%",
+        background: `radial-gradient(circle, ${color}40, transparent)`,
+        filter: "blur(8px)",
+      }}
+    />
+  );
 }
 
 // ─── Vibration helper ──────────────────────────────────────────────────────────
@@ -118,7 +281,7 @@ const cardTransition = {
 const TOTAL_QUESTIONS = 8;
 
 export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardProps) {
-  // step 0 = welcome/auth, steps 1-8 = questions, step 9 = calibration
+  // step 0 = welcome/auth, steps 1-6 = intro, steps 7-14 = questions, step 15 = calibration
   const [step, setStep] = useState<number>(initialUser ? 1 : 0);
   const [direction, setDirection] = useState(1);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
@@ -140,6 +303,62 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
 
   // Background particles
   const [particles, setParticles] = useState<any[]>([]);
+
+  // 3D handwriting states
+  const [isWriting, setIsWriting] = useState(true);
+  const [showContent, setShowContent] = useState(false);
+  const [penPaths, setPenPaths] = useState<string[]>([]);
+  const [showInkSplat, setShowInkSplat] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [0, 800], isMobile ? [0, 0] : [8, -8]);
+  const rotateY = useTransform(mouseX, [0, 1400], isMobile ? [0, 0] : [-8, 8]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    },
+    [mouseX, mouseY]
+  );
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Generate pen paths when step changes (for steps 1-6)
+  useEffect(() => {
+    if (step < 1 || step > 6) return;
+    const introStep = INTRO_STEPS[step - 1];
+    if (!introStep) return;
+
+    const newPaths: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      newPaths.push(generateHandwritingPath(introStep.penText));
+    }
+    setPenPaths(newPaths);
+    setIsWriting(true);
+    setShowContent(false);
+    setShowInkSplat(true);
+
+    const timer1 = setTimeout(() => setShowInkSplat(false), 1200);
+    const timer2 = setTimeout(() => {
+      setIsWriting(false);
+      setShowContent(true);
+    }, 2200);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [step]);
 
   const toggleSubject = (sub: string) => {
     vibrate(25);
@@ -240,7 +459,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
   const startCalibration = () => {
     vibrate([50, 80, 50]);
     setDirection(1);
-    setStep(9);
+    setStep(15);
     setCalibrationProgress(0);
     const interval = setInterval(() => {
       setCalibrationProgress((prev) => {
@@ -281,37 +500,74 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || 'Failed to save settings.');
-      setStep(8);
+      setStep(14);
     }
   };
 
+  // Keyboard navigation for feature tour steps
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (step < 1 || step > 6) return;
+      if (e.key === "ArrowRight" || e.key === " ") {
+        e.preventDefault();
+        vibrate(20);
+        setDirection(1);
+        setStep((s) => Math.min(s + 1, 7));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        vibrate(20);
+        setDirection(-1);
+        setStep((s) => Math.max(s - 1, 1));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [step]);
+
   // Question step labels for progress
   const questionLabels = [
-    'Welcome', 'Your Name', 'Board', 'Class', 'Subjects',
+    'Welcome',
+    'Feature Tour', 'Feature Tour', 'Feature Tour', 'Feature Tour', 'Feature Tour', 'Feature Tour',
+    'Your Name', 'Board', 'Class', 'Subjects',
     'Goal', 'Challenge', 'AI Persona', 'Learning Style & Interests',
     'Calibrating'
   ];
 
   const canProceed = (s: number): boolean => {
+    if (s >= 1 && s <= 6) return true;
     switch (s) {
-      case 1: return name.trim().length > 0;
-      case 2: return !!board;
-      case 3: return !!className;
-      case 4: return selectedSubjects.length > 0;
-      case 5: return !!targetGoal;
-      case 6: return !!studyChallenge;
-      case 7: return !!tutorPersona;
-      case 8: return !!learningStyle;
+      case 7: return name.trim().length > 0;
+      case 8: return !!board;
+      case 9: return !!className;
+      case 10: return selectedSubjects.length > 0;
+      case 11: return !!targetGoal;
+      case 12: return !!studyChallenge;
+      case 13: return !!tutorPersona;
+      case 14: return !!learningStyle;
       default: return true;
     }
   };
 
-  const progress = step === 0 ? 0 : step >= 9 ? 100 : Math.round((step / TOTAL_QUESTIONS) * 100);
+  const progress = step === 0 ? 0 : step >= 15 ? 100 : Math.round(((step - 6) / 8) * 100);
 
   // ─── Render ────────────────────────────────────────────────────────────────────
 
+  const backgroundStyle = step >= 1 && step <= 6 && INTRO_STEPS[step - 1]
+    ? {
+        background: `radial-gradient(ellipse at 30% 20%, ${INTRO_STEPS[step - 1].accentFrom}12 0%, transparent 50%),
+                     radial-gradient(ellipse at 70% 80%, ${INTRO_STEPS[step - 1].accentTo}10 0%, transparent 50%),
+                     linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 30%, #080818 60%, #0a0a12 100%)`
+      }
+    : {
+        background: 'linear-gradient(135deg, #020617 0%, #0f172a 50%, #020617 100%)'
+      };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 overflow-hidden" style={{ perspective: '1200px' }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden transition-all duration-700 ease-out"
+      style={{ ...backgroundStyle, perspective: '1200px' }}
+      onMouseMove={handleMouseMove}
+    >
       
       {/* Background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -327,45 +583,66 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
       </div>
 
       {/* Progress bar — top */}
-      {step > 0 && step < 9 && (
+      {step > 0 && step < 15 && (
         <div className="absolute top-0 left-0 right-0 z-20">
           <div className="h-1 bg-slate-800/60">
             <motion.div
               className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-400 shadow-[0_0_12px_rgba(99,102,241,0.6)]"
-              animate={{ width: `${progress}%` }}
+              animate={{ width: `${step <= 6 ? (step / 6) * 100 : ((step - 6) / 8) * 100}%` }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
             />
           </div>
           {/* Step dots */}
           <div className="flex justify-center gap-2 py-3">
-            {Array.from({ length: TOTAL_QUESTIONS }, (_, i) => (
-              <motion.div
-                key={i}
-                className={`rounded-full transition-all duration-300 ${
-                  i + 1 === step
-                    ? 'w-8 h-2 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]'
-                    : i + 1 < step
-                    ? 'w-2 h-2 bg-indigo-400/70'
-                    : 'w-2 h-2 bg-slate-700'
-                }`}
-                layout
-              />
-            ))}
+            {step <= 6 ? (
+              Array.from({ length: 6 }, (_, i) => (
+                <motion.div
+                  key={`tour-dot-${i}`}
+                  className={`rounded-full transition-all duration-300 ${
+                    i + 1 === step
+                      ? 'w-8 h-2 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]'
+                      : i + 1 < step
+                      ? 'w-2 h-2 bg-indigo-400/70'
+                      : 'w-2 h-2 bg-slate-700'
+                  }`}
+                  layout
+                />
+              ))
+            ) : (
+              Array.from({ length: 8 }, (_, i) => (
+                <motion.div
+                  key={`calib-dot-${i}`}
+                  className={`rounded-full transition-all duration-300 ${
+                    i + 7 === step
+                      ? 'w-8 h-2 bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]'
+                      : i + 7 < step
+                      ? 'w-2 h-2 bg-purple-400/70'
+                      : 'w-2 h-2 bg-slate-700'
+                  }`}
+                  layout
+                />
+              ))
+            )}
           </div>
         </div>
       )}
 
       {/* Step label */}
-      {step > 0 && step < 9 && (
+      {step > 0 && step < 15 && (
         <div className="absolute top-12 left-0 right-0 z-20 flex justify-center">
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">
-            {step} / {TOTAL_QUESTIONS} — {questionLabels[step]}
+            {step <= 6 ? `Tour: ${step} / 6` : `Calibration: ${step - 6} / 8`} — {questionLabels[step]}
           </span>
         </div>
       )}
 
       {/* Main card container */}
-      <div className="relative w-full max-w-lg z-10 px-4" style={{ transformStyle: 'preserve-3d' }}>
+      <div
+        className={`relative w-full z-10 px-4 transition-all duration-500 ease-in-out ${
+          step >= 1 && step <= 6 ? 'max-w-5xl' : 'max-w-lg'
+        }`}
+        style={{ transformStyle: 'preserve-3d' }}
+      >
         <AnimatePresence mode="wait" custom={direction}>
 
           {/* ─── STEP 0: Welcome & Auth ─────────────────────────── */}
@@ -417,8 +694,385 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 1: Name ─────────────────────────────────── */}
-          {step === 1 && (
+          {/* ─── STEPS 1-6: 3D FEATURE TOUR ─────────────────────── */}
+          {step >= 1 && step <= 6 && INTRO_STEPS[step - 1] && (
+            <motion.div
+              key={`intro-step-${step}`}
+              custom={direction}
+              variants={cardVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={cardTransition}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* ═══ LEFT: 3D Pen Writing Canvas ═══ */}
+              <motion.div
+                className="relative"
+                style={{ transformStyle: "preserve-3d", transform: "translateZ(40px)" }}
+                animate={isMobile ? { y: [0, -6, 0] } : {}}
+                transition={isMobile ? { repeat: Infinity, duration: 4, ease: "easeInOut" } : {}}
+              >
+                {/* Canvas Card */}
+                <div
+                  className="relative rounded-3xl overflow-hidden transition-all duration-300"
+                  style={{
+                    background: `linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))`,
+                    backdropFilter: "blur(20px)",
+                    border: `1px solid rgba(255,255,255,0.06)`,
+                    boxShadow: `
+                      0 0 80px ${INTRO_STEPS[step - 1].accentFrom}15,
+                      0 25px 60px rgba(0,0,0,0.5),
+                      inset 0 1px 0 rgba(255,255,255,0.05)
+                    `,
+                    aspectRatio: isMobile ? "2/1" : "4/3",
+                    minHeight: isMobile ? "200px" : "340px",
+                  }}
+                >
+                  {/* Paper texture lines */}
+                  <div
+                    className="absolute inset-0 opacity-[0.06]"
+                    style={{
+                      backgroundImage: `repeating-linear-gradient(
+                        0deg,
+                        transparent,
+                        transparent 27px,
+                        rgba(255,255,255,0.15) 27px,
+                        rgba(255,255,255,0.15) 28px
+                      )`,
+                      backgroundPositionY: "20px",
+                    }}
+                  />
+
+                  {/* Red margin line */}
+                  <div
+                    className="absolute top-0 bottom-0 opacity-[0.12]"
+                    style={{
+                      left: isMobile ? "40px" : "60px",
+                      width: "2px",
+                      background: `linear-gradient(to bottom, transparent, #ef4444, #ef4444, transparent)`,
+                    }}
+                  />
+
+                  {/* Ink splatter on step change */}
+                  {showInkSplat && <InkSplatter color={INTRO_STEPS[step - 1].accentFrom} />}
+
+                  {/* SVG Handwriting Animation */}
+                  <svg
+                    viewBox="0 0 600 200"
+                    className="absolute inset-0 w-full h-full"
+                    style={{ padding: isMobile ? "6% 4%" : "15% 10%" }}
+                  >
+                    <defs>
+                      <linearGradient id={`penGrad-${step}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor={INTRO_STEPS[step - 1].accentFrom} />
+                        {INTRO_STEPS[step - 1].accentVia && <stop offset="50%" stopColor={INTRO_STEPS[step - 1].accentVia} />}
+                        <stop offset="100%" stopColor={INTRO_STEPS[step - 1].accentTo} />
+                      </linearGradient>
+                      <filter id="penGlow">
+                        <feGaussianBlur stdDeviation="3" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    {penPaths.map((d, i) => (
+                      <motion.path
+                        key={`${step}-${i}`}
+                        d={d}
+                        fill="none"
+                        stroke={`url(#penGrad-${step})`}
+                        strokeWidth={2.5 - i * 0.3}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#penGlow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 - i * 0.2 }}
+                        transition={{
+                          pathLength: {
+                            duration: 1.8,
+                            delay: i * 0.15,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                          opacity: { duration: 0.3, delay: i * 0.15 },
+                        }}
+                      />
+                    ))}
+
+                    {/* Actual readable text that fades in after writing */}
+                    <motion.text
+                      x="300"
+                      y="130"
+                      textAnchor="middle"
+                      fill={`url(#penGrad-${step})`}
+                      fontFamily="'Georgia', 'Times New Roman', serif"
+                      fontSize={isMobile ? "24" : "32"}
+                      fontStyle="italic"
+                      fontWeight="bold"
+                      initial={{ opacity: 0, y: 140 }}
+                      animate={{ opacity: isWriting ? 0 : 1, y: isWriting ? 140 : 130 }}
+                      transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    >
+                      {INTRO_STEPS[step - 1].penText}
+                    </motion.text>
+                  </svg>
+
+                  {/* 3D Pen / Nib */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    initial={{ x: "10%", y: "30%", rotate: -35, opacity: 0, scale: 0.8 }}
+                    animate={
+                      isWriting
+                        ? {
+                            x: ["10%", "30%", "55%", "75%", "85%"],
+                            y: ["30%", "40%", "35%", "45%", "38%"],
+                            rotate: [-35, -30, -38, -32, -35],
+                            opacity: 1,
+                            scale: isMobile ? 0.7 : 1,
+                          }
+                        : { x: "90%", y: "15%", rotate: -20, opacity: 0.4, scale: isMobile ? 0.6 : 0.9 }
+                    }
+                    transition={{
+                      duration: isWriting ? 2 : 0.6,
+                      ease: isWriting ? "easeInOut" : "easeOut",
+                    }}
+                    style={{ transformStyle: "preserve-3d", transform: "translateZ(30px)" }}
+                  >
+                    {/* Pen body */}
+                    <div
+                      className="relative"
+                      style={{
+                        width: isMobile ? "80px" : "120px",
+                        height: isMobile ? "10px" : "14px",
+                        background: `linear-gradient(90deg, #1a1a2e, #2d2d4f, #1a1a2e)`,
+                        borderRadius: "7px 2px 2px 7px",
+                        boxShadow: `
+                          0 4px 15px rgba(0,0,0,0.4),
+                          0 2px 4px rgba(0,0,0,0.3),
+                          inset 0 1px 0 rgba(255,255,255,0.08)
+                        `,
+                      }}
+                    >
+                      {/* Pen grip section */}
+                      <div
+                        className="absolute right-0 top-0 bottom-0"
+                        style={{
+                          width: isMobile ? "25px" : "35px",
+                          background: `linear-gradient(90deg, transparent, ${INTRO_STEPS[step - 1].accentFrom}60, ${INTRO_STEPS[step - 1].accentTo}80)`,
+                          borderRadius: "0 2px 2px 0",
+                        }}
+                      />
+                      {/* Pen clip */}
+                      <div
+                        className="absolute -top-[3px] left-[15px]"
+                        style={{
+                          width: isMobile ? "25px" : "40px",
+                          height: isMobile ? "3px" : "4px",
+                          background: `linear-gradient(90deg, ${INTRO_STEPS[step - 1].accentFrom}, ${INTRO_STEPS[step - 1].accentTo})`,
+                          borderRadius: "2px",
+                          boxShadow: `0 0 8px ${INTRO_STEPS[step - 1].accentFrom}60`,
+                        }}
+                      />
+                      {/* Nib */}
+                      <div
+                        className="absolute -right-[10px] top-1/2 -translate-y-1/2"
+                        style={{
+                          width: 0,
+                          height: 0,
+                          borderTop: "5px solid transparent",
+                          borderBottom: "5px solid transparent",
+                          borderLeft: `12px solid ${INTRO_STEPS[step - 1].accentFrom}`,
+                          filter: `drop-shadow(0 0 4px ${INTRO_STEPS[step - 1].accentFrom})`,
+                        }}
+                      />
+                    </div>
+                    {/* Ink trail drip */}
+                    {isWriting && (
+                      <motion.div
+                        className="absolute -right-[12px] top-1/2 -translate-y-1/2 rounded-full"
+                        style={{
+                          width: 6,
+                          height: 6,
+                          background: INTRO_STEPS[step - 1].accentFrom,
+                          boxShadow: `0 0 12px ${INTRO_STEPS[step - 1].accentFrom}, 0 0 20px ${INTRO_STEPS[step - 1].accentFrom}60`,
+                        }}
+                        animate={{ scale: [1, 1.5, 1], opacity: [1, 0.6, 1] }}
+                        transition={{ duration: 0.4, repeat: Infinity }}
+                      />
+                    )}
+                  </motion.div>
+
+                  {/* Step counter badge */}
+                  <div
+                    className="absolute top-4 right-4 px-3 py-1.5 rounded-full text-xs font-mono tracking-wider"
+                    style={{
+                      background: `linear-gradient(135deg, ${INTRO_STEPS[step - 1].accentFrom}20, ${INTRO_STEPS[step - 1].accentTo}15)`,
+                      border: `1px solid ${INTRO_STEPS[step - 1].accentFrom}30`,
+                      color: INTRO_STEPS[step - 1].accentTo,
+                    }}
+                  >
+                    {String(step).padStart(2, "0")} / 06
+                  </div>
+                </div>
+
+                {/* Reflection / Shadow */}
+                <div
+                  className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[80%] h-8 rounded-full blur-2xl"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${INTRO_STEPS[step - 1].accentFrom}20, ${INTRO_STEPS[step - 1].accentTo}20, transparent)`,
+                  }}
+                />
+              </motion.div>
+
+              {/* ═══ RIGHT: Content Panel ═══ */}
+              <motion.div
+                className="flex flex-col justify-center space-y-6 lg:space-y-8"
+                style={{ transformStyle: "preserve-3d", transform: "translateZ(20px)" }}
+              >
+                {/* Floating icon */}
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.3, type: "spring", damping: 12 }}
+                  className="text-5xl w-20 h-20 flex items-center justify-center rounded-2xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${INTRO_STEPS[step - 1].accentFrom}20, ${INTRO_STEPS[step - 1].accentTo}10)`,
+                    border: `1px solid ${INTRO_STEPS[step - 1].accentFrom}25`,
+                    boxShadow: `0 0 30px ${INTRO_STEPS[step - 1].accentFrom}15`,
+                  }}
+                >
+                  {INTRO_STEPS[step - 1].icon}
+                </motion.div>
+
+                {/* Title */}
+                <div>
+                  <motion.p
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: showContent ? 1 : 0.3, x: showContent ? 0 : 30 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="text-base sm:text-lg font-medium tracking-wide"
+                    style={{ color: `${INTRO_STEPS[step - 1].accentTo}90` }}
+                  >
+                    {INTRO_STEPS[step - 1].title}
+                  </motion.p>
+                  <motion.h1
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: showContent ? 1 : 0.2, x: showContent ? 0 : 40 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                    style={{
+                      background: `linear-gradient(135deg, #ffffff, ${INTRO_STEPS[step - 1].accentTo})`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {INTRO_STEPS[step - 1].subtitle}
+                  </motion.h1>
+                </div>
+
+                {/* Description */}
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: showContent ? 0.7 : 0, y: showContent ? 0 : 20 }}
+                  transition={{ duration: 0.5, delay: 0.35 }}
+                  className="text-base sm:text-lg leading-relaxed max-w-md"
+                  style={{ color: "rgba(255,255,255,0.6)" }}
+                >
+                  {INTRO_STEPS[step - 1].description}
+                </motion.p>
+
+                {/* Feature pills */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 15 }}
+                  transition={{ duration: 0.4, delay: 0.5 }}
+                  className="flex flex-wrap gap-2"
+                >
+                  {INTRO_STEPS[step - 1].tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 rounded-full text-xs font-medium tracking-wide"
+                      style={{
+                        background: `${INTRO_STEPS[step - 1].accentFrom}12`,
+                        border: `1px solid ${INTRO_STEPS[step - 1].accentFrom}20`,
+                        color: `${INTRO_STEPS[step - 1].accentTo}cc`,
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </motion.div>
+
+                {/* Navigation Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+                  transition={{ duration: 0.4, delay: 0.6 }}
+                  className="flex items-center gap-4 pt-4"
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.05, x: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={goBack}
+                    className="px-5 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      color: "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    ← Back
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: `0 0 40px ${INTRO_STEPS[step - 1].accentFrom}40, 0 0 80px ${INTRO_STEPS[step - 1].accentFrom}20`,
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={goNext}
+                    className="group relative px-8 py-3.5 rounded-xl text-sm font-semibold tracking-wide overflow-hidden cursor-pointer"
+                    style={{
+                      background: `linear-gradient(135deg, ${INTRO_STEPS[step - 1].accentFrom}, ${INTRO_STEPS[step - 1].accentTo})`,
+                      color: "#0a0a0f",
+                      boxShadow: `0 0 30px ${INTRO_STEPS[step - 1].accentFrom}30, 0 4px 15px rgba(0,0,0,0.3)`,
+                    }}
+                  >
+                    <span className="relative z-10">
+                      {step === 6 ? "Calibrate AI Partner →" : "Continue →"}
+                    </span>
+                    {/* Shine effect */}
+                    <motion.div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                      }}
+                      animate={{ x: ["-100%", "200%"] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+                    />
+                  </motion.button>
+
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
+                    whileHover={{ opacity: 0.9 }}
+                    onClick={() => { vibrate(30); setDirection(1); setStep(7); }}
+                    className="text-xs underline underline-offset-4 cursor-pointer"
+                    style={{ color: "rgba(255,255,255,0.4)" }}
+                  >
+                    Skip intro
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* ─── STEP 7: Name ─────────────────────────────────── */}
+          {step === 7 && (
             <motion.div
               key="name"
               custom={direction}
@@ -449,19 +1103,24 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   autoFocus
                   className="bg-slate-800/60 border-slate-700 text-center text-lg h-14 rounded-2xl focus:border-indigo-500 text-white placeholder:text-slate-600 max-w-xs"
                 />
-                <Button
-                  onClick={goNext}
-                  disabled={!canProceed(1)}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-12 text-sm font-bold gap-2 shadow-lg shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] transition-transform"
-                >
-                  Continue <ChevronRight className="size-4" />
-                </Button>
+                <div className="flex gap-3 pt-2">
+                  <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
+                    <ChevronLeft className="size-4" /> Back
+                  </Button>
+                  <Button
+                    onClick={goNext}
+                    disabled={!canProceed(7)}
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-12 text-sm font-bold gap-2 shadow-lg shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] transition-transform"
+                  >
+                    Continue <ChevronRight className="size-4" />
+                  </Button>
+                </div>
               </div>
             </motion.div>
           )}
 
-          {/* ─── STEP 2: Board ────────────────────────────────── */}
-          {step === 2 && (
+          {/* ─── STEP 8: Board ────────────────────────────────── */}
+          {step === 8 && (
             <motion.div
               key="board"
               custom={direction}
@@ -517,7 +1176,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(2)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(8)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -525,8 +1184,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 3: Class ────────────────────────────────── */}
-          {step === 3 && (
+          {/* ─── STEP 9: Class ────────────────────────────────── */}
+          {step === 9 && (
             <motion.div
               key="class"
               custom={direction}
@@ -574,7 +1233,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(3)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(9)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -582,8 +1241,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 4: Subjects ─────────────────────────────── */}
-          {step === 4 && (
+          {/* ─── STEP 10: Subjects ─────────────────────────────── */}
+          {step === 10 && (
             <motion.div
               key="subjects"
               custom={direction}
@@ -631,7 +1290,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(4)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(10)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -639,8 +1298,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 5: Target Goal ──────────────────────────── */}
-          {step === 5 && (
+          {/* ─── STEP 11: Target Goal ──────────────────────────── */}
+          {step === 11 && (
             <motion.div
               key="goal"
               custom={direction}
@@ -697,7 +1356,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(5)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(11)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -705,8 +1364,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 6: Study Challenge ──────────────────────── */}
-          {step === 6 && (
+          {/* ─── STEP 12: Study Challenge ──────────────────────── */}
+          {step === 12 && (
             <motion.div
               key="challenge"
               custom={direction}
@@ -763,7 +1422,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(6)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(12)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -771,8 +1430,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 7: AI Persona ───────────────────────────── */}
-          {step === 7 && (
+          {/* ─── STEP 13: AI Persona ───────────────────────────── */}
+          {step === 13 && (
             <motion.div
               key="persona"
               custom={direction}
@@ -825,7 +1484,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   <Button variant="ghost" onClick={goBack} className="rounded-2xl px-4 h-11 text-xs text-slate-400 hover:text-white">
                     <ChevronLeft className="size-4" /> Back
                   </Button>
-                  <Button onClick={goNext} disabled={!canProceed(7)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
+                  <Button onClick={goNext} disabled={!canProceed(13)} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg disabled:opacity-40 hover:scale-[1.03] transition-transform">
                     Continue <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -833,8 +1492,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 8: Learning Style & Interests ───────────── */}
-          {step === 8 && (
+          {/* ─── STEP 14: Learning Style & Interests ───────────── */}
+          {step === 14 && (
             <motion.div
               key="style"
               custom={direction}
@@ -921,7 +1580,7 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
                   </Button>
                   <Button
                     onClick={startCalibration}
-                    disabled={!canProceed(8)}
+                    disabled={!canProceed(14)}
                     className="bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-500 hover:from-indigo-500 hover:via-purple-500 hover:to-teal-400 text-white rounded-2xl px-8 h-11 text-sm font-bold gap-2 shadow-lg shadow-indigo-600/30 disabled:opacity-40 hover:scale-[1.03] transition-transform"
                   >
                     <Zap className="size-4" /> Calibrate & Launch
@@ -931,8 +1590,8 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
             </motion.div>
           )}
 
-          {/* ─── STEP 9: Calibration ──────────────────────────── */}
-          {step === 9 && (
+          {/* ─── STEP 15: Calibration ──────────────────────────── */}
+          {step === 15 && (
             <motion.div
               key="calibration"
               initial={{ opacity: 0, scale: 0.8 }}
@@ -985,6 +1644,54 @@ export function OnboardingWizard({ initialUser, onComplete }: OnboardingWizardPr
 
         </AnimatePresence>
       </div>
+
+      {/* Corner decorative elements for Tour */}
+      {step >= 1 && step <= 6 && INTRO_STEPS[step - 1] && (
+        <>
+          <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none">
+            <motion.div
+              className="absolute top-6 left-6 w-16 h-[1px]"
+              style={{ background: `linear-gradient(90deg, ${INTRO_STEPS[step - 1].accentFrom}40, transparent)` }}
+              animate={{ scaleX: [0, 1], opacity: [0, 0.5] }}
+              transition={{ duration: 1, delay: 0.5 }}
+            />
+            <motion.div
+              className="absolute top-6 left-6 w-[1px] h-16"
+              style={{ background: `linear-gradient(180deg, ${INTRO_STEPS[step - 1].accentFrom}40, transparent)` }}
+              animate={{ scaleY: [0, 1], opacity: [0, 0.5] }}
+              transition={{ duration: 1, delay: 0.5 }}
+            />
+          </div>
+          <div className="absolute bottom-0 right-0 w-32 h-32 pointer-events-none">
+            <motion.div
+              className="absolute bottom-6 right-6 w-16 h-[1px]"
+              style={{ background: `linear-gradient(270deg, ${INTRO_STEPS[step - 1].accentTo}40, transparent)` }}
+              animate={{ scaleX: [0, 1], opacity: [0, 0.5] }}
+              transition={{ duration: 1, delay: 0.7 }}
+            />
+            <motion.div
+              className="absolute bottom-6 right-6 w-[1px] h-16"
+              style={{ background: `linear-gradient(0deg, ${INTRO_STEPS[step - 1].accentTo}40, transparent)` }}
+              animate={{ scaleY: [0, 1], opacity: [0, 0.5] }}
+              transition={{ duration: 1, delay: 0.7 }}
+            />
+          </div>
+          
+          {/* Keyboard navigation hint */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 0.2, y: 0 }}
+            transition={{ delay: 3 }}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs"
+            style={{ color: "rgba(255,255,255,0.25)" }}
+          >
+            <kbd className="px-2 py-0.5 rounded border border-white/10 bg-white/5 font-mono text-[10px]">←</kbd>
+            <kbd className="px-2 py-0.5 rounded border border-white/10 bg-white/5 font-mono text-[10px]">→</kbd>
+            <span className="ml-1">to navigate</span>
+          </motion.div>
+        </>
+      )}
     </div>
   );
 }
+
