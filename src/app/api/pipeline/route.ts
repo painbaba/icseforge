@@ -4,7 +4,7 @@ import { runPipeline } from '@/lib/agents';
 import { db } from '@/lib/db';
 
 export const runtime = 'nodejs';
-export const maxDuration = 600;
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
