@@ -55,9 +55,8 @@ COPY --from=builder /app/upload ./upload
 
 # Copy Prisma CLI so db:push works at startup
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 
 EXPOSE 3000
 
 # Start script: push schema + start server
-CMD ["sh", "-c", "./node_modules/.bin/prisma db push && node server.js"]
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js db push && node server.js"]
