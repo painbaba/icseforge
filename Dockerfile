@@ -1,30 +1,37 @@
-FROM oven/bun:1.1.20-alpine
+FROM node:20-slim
 
 # Install system dependencies
-RUN apk add --no-cache python3 make g++ gcc sqlite-dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+        build-essential \
+            sqlite3 \
+                && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+                # Install Bun
+                RUN npm install -g bun@1.1.20
 
-# Copy dependency files
-COPY package.json bun.lock* ./
+                WORKDIR /app
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+                # Copy dependency files
+                COPY package.json bun.lock* ./
 
-# Copy the rest of the application
-COPY . .
+                # Install dependencies
+                RUN bun install --frozen-lockfile
 
-# Generate Prisma client
-RUN bun run db:generate
+                # Copy the rest of the application
+                COPY . .
 
-# Build Next.js
-RUN NODE_OPTIONS="--max-old-space-size=2048" bun run build
+                # Generate Prisma client
+                RUN bun run db:generate
 
-# Expose port and configure environment
-EXPOSE 3000
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
+                # Build Next.js
+                RUN NODE_OPTIONS="--max-old-space-size=2048" bun run build
 
-# Run database push and start Next.js application
-CMD ["sh", "-c", "bun run db:push && bun run start"]
+                # Expose port and configure environment
+                EXPOSE 3000
+                ENV NODE_ENV=production
+                ENV PORT=3000
+                ENV HOSTNAME=0.0.0.0
+
+                # Run database push and start Next.js application
+                CMD ["sh", "-c", "bun run db:push && bun run start"]
