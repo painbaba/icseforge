@@ -30,9 +30,9 @@ RUN NODE_OPTIONS="--max-old-space-size=2048" bun run build
 # Create data directories
 RUN mkdir -p /app/data /app/public/generated
 
-# Copy and prepare entrypoint
+# Copy and prepare entrypoint (strip CRLF for Linux)
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Expose port and configure environment
 EXPOSE 3000
